@@ -2,176 +2,241 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Prince Manager | Pro</title>
+<title>Prince Manager | V13 Ultra</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root { --bg: #050505; --sidebar: #0a0a0a; --card: #111111; --accent: #ff9d00; --blue: #00d9ff; --red: #ff3333; --green: #00ff7f; --text: #ffffff; --purple: #9d00ff; }
+:root { 
+    --bg: #030003; --sidebar: rgba(10, 0, 10, 0.9); --card: rgba(30, 0, 30, 0.7); 
+    --pink-bright: #ff00ff; --pink-light: #ff80ff; --red: #ff3366; --green: #00ffcc; --text: #fff; 
+}
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
-#lock-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-.login-card { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--purple); text-align: center; width: 320px; box-shadow: 0 0 30px rgba(157, 0, 255, 0.1); }
-.login-card input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #222; background: #000; color: white; text-align: center; margin-bottom: 15px; outline: none; font-size: 16px; }
-.sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #151515; padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-.logo { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, #ff00ff, #8000ff, #00ffff, #ff00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; margin-bottom: 30px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-@keyframes shine { to { background-position: 200% center; } }
-.stat-item { margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 10px; }
-.stat-label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
-.stat-value { font-size: 22px; font-weight: bold; font-family: 'Consolas', monospace; }
-.dev-box { margin-top: auto; padding: 15px; background: rgba(157, 0, 255, 0.05); border-radius: 15px; border: 1px solid rgba(157, 0, 255, 0.1); text-align: center; }
-.dev-name, #ds_link { font-weight: 900; background: linear-gradient(90deg, #00d9ff, #9d00ff, #00d9ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; text-decoration: none; display: block; font-size: 14px; cursor: pointer; }
-.tabs-nav { display: flex; gap: 10px; padding: 15px 20px 0; }
-.tab-btn { background: #151515; border: 1px solid #222; color: #888; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; transition: 0.3s; }
-.tab-btn.active { background: var(--purple); color: white; border-color: var(--purple); box-shadow: 0 0 15px rgba(157, 0, 255, 0.3); }
-.main { flex: 1; display: flex; flex-direction: column; position: relative; }
-.tab-content { display: none; flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
-.tab-content.active { display: block; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; align-content: start; }
-.card { background: var(--card); border-radius: 18px; border: 1px solid #1a1a1a; overflow: hidden; position: relative; transition: 0.3s; display: flex; flex-direction: column; }
-.card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 157, 0, 0.1); }
-.card-img { width: 100%; height: 130px; background: #080808; object-fit: contain; border-bottom: 1px solid #1a1a1a; }
-.card-body { padding: 15px; }
-.card-title { font-size: 15px; font-weight: 800; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-dur { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
-.dmg-box { display: flex; background: #000; border-radius: 8px; border: 1px solid #222; overflow: hidden; }
-.dmg-box input { width: 50%; background: transparent; border: none; color: var(--accent); text-align: center; font-weight: bold; outline: none; padding: 8px; font-size: 16px; }
-.dmg-box button { width: 50%; background: var(--accent); border: none; font-weight: bold; cursor: pointer; color: #000; font-size: 11px; text-transform: uppercase; transition: 0.2s; }
-.dmg-box button:active { opacity: 0.7; }
-.bottom-bar { background: #0a0a0a; border-top: 1px solid #151515; padding: 0 20px; display: flex; gap: 10px; position: absolute; bottom: 0; width: 100%; height: 85px; align-items: center; z-index: 100; }
-.nav-input { background: #151515; border: 1px solid #222; padding: 10px; border-radius: 8px; color: white; outline: none; text-align: center; font-size: 12px; transition: 0.2s; }
-.nav-input:focus { border-color: var(--purple); background: #1a1a1a; }
-.nav-btn { border: none; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 10px; height: 42px; padding: 0 15px; transition: 0.2s; }
-.nav-btn:active { transform: scale(0.95); }
-.chart-wrapper { background: #0a0a0a; border-radius: 20px; padding: 20px; border: 1px solid #151515; height: 100%; min-height: 400px; }
+body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; position: relative; }
+
+/* Фон */
+.bg-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a001a 0%, #030003 100%); }
+.bg-orb { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s infinite alternate ease-in-out; }
+@keyframes float { 0% { transform: translate(-20%, -20%); } 100% { transform: translate(120%, 120%); } }
+
+@keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% center; } }
+.logo { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, var(--pink-light), var(--pink-bright), #fff, var(--pink-bright), var(--pink-light)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; margin-bottom: 25px; text-align: center; text-transform: uppercase; }
+
+.sidebar { width: 260px; background: var(--sidebar); backdrop-filter: blur(25px); border-right: 1px solid rgba(255, 0, 255, 0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
+.main { flex: 1; display: flex; flex-direction: column; z-index: 5; position: relative; }
+.stat-item { margin-bottom: 10px; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 0, 255, 0.1); }
+.stat-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-size: 18px; font-weight: bold; font-family: 'Consolas', monospace; }
+
+.tabs-nav { display: flex; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 11px; text-transform: uppercase; }
+.tab-btn.active { background: var(--pink-bright); color: #fff; box-shadow: 0 0 15px var(--pink-bright); border: none; }
+
+.content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+.view { display: none; }
+.view.active { display: block; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+.card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; transition: 0.3s; }
+.card-header { padding: 12px; background: rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
+.dur-val { font-size: 32px; font-weight: 900; text-align: center; padding: 20px 0; color: var(--pink-light); }
+.card-footer { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(255,255,255,0.1); }
+.f-btn { padding: 12px; border: none; background: none; color: #aaa; font-size: 10px; cursor: pointer; font-weight: bold; }
+.f-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+.nav-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; color: white; outline: none; }
+.nav-btn { background: var(--pink-dark); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; height: 40px; padding: 0 15px; font-size: 11px; }
+.nav-btn:hover { background: var(--pink-bright); }
+
+.bottom-control { position: absolute; bottom: 0; width: 100%; background: rgba(10,0,10,0.95); backdrop-filter: blur(20px); padding: 15px 25px; display: flex; gap: 12px; border-top: 1px solid var(--pink-bright); z-index: 100; }
+
+#note-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 550px; background: rgba(15, 0, 15, 0.98); backdrop-filter: blur(30px); border: 2px solid var(--pink-bright); border-radius: 20px; z-index: 1000; padding: 20px; flex-direction: column; }
+#ds_link { background: linear-gradient(90deg, #fff, var(--pink-light), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; text-decoration: none; font-weight: bold; font-size: 13px; }
 </style>
 </head>
-<body oncontextmenu="return false;">
+<body onclick="initAudio()">
 
-<div id="lock-screen">
-    <div class="login-card">
-        <div class="logo">Prince Manager</div>
-        <input type="password" id="pass_in" placeholder="ВВЕДИТЕ ПАРОЛЬ" autofocus onkeypress="if(event.keyCode==13) _check()">
-        <button class="nav-btn" style="background: var(--purple); color:white; width:100%" onclick="_check()">ВОЙТИ</button>
-    </div>
+<div class="bg-wrapper"><div class="bg-orb" style="top: -10%; left: -10%;"></div><div class="bg-orb" style="bottom: -10%; right: -10%; animation-delay: -7s;"></div></div>
+
+<div id="note-overlay">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><span style="font-weight:bold; color:var(--pink-bright)">БЛОКНОТ ПРИНЦА</span><button onclick="toggleNotes()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:20px;">✕</button></div>
+    <textarea id="notes" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid rgba(255,0,255,0.2); color:#ffccff; padding:15px; border-radius:10px; resize:none; outline:none;" oninput="saveNotes()"></textarea>
 </div>
 
-<div id="app-content" style="display:none; height:100vh;">
-    <div style="display: flex; height:100%;">
-        <div class="sidebar">
-            <div class="logo">Prince Manager</div>
-            <div class="stat-item"><div class="stat-label">💰 Общий доход</div><div id="p_val" class="stat-value" style="color:var(--green)">$0</div></div>
-            <div class="stat-item"><div class="stat-label">📉 Общий убыток</div><div id="l_val" class="stat-value" style="color:var(--red)">$0</div></div>
-            <div class="stat-item"><div class="stat-label">🕒 Фарм-тайм</div><div id="h_val" class="stat-value">0.0ч</div></div>
-            <button class="nav-btn" style="background:#222; color:white; margin-top:10px; width:100%" onclick="_reset_session()">Очистить данные</button>
-            <div class="dev-box">
-                <div class="dev-name">Prince Manager</div>
-                <a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a>
+<div class="sidebar">
+    <div class="logo">Prince Manager</div>
+    <div class="stat-item"><div class="stat-label">🌸 Баланс</div><div id="s-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">📈 Прибыль / Час</div><div id="s-sph" class="stat-value" style="color:var(--green)">$0</div></div>
+    
+    <button class="nav-btn" style="margin-top:10px; width:100%" onclick="toggleNotes()">📋 ОТКРЫТЬ БЛОКНОТ</button>
+    <button class="nav-btn" style="margin-top:10px; width:100%; background: #441144;" onclick="clearStats()">🗑️ ОЧИСТИТЬ СТАТУ</button>
+    
+    <div style="margin-top:auto; padding:15px; text-align:center; background:rgba(255,255,255,0.03); border-radius:15px;"><a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a></div>
+</div>
+
+<div class="main">
+    <div class="tabs-nav">
+        <button id="b-items" class="tab-btn active" onclick="tab('items')">🎒 Снаряжение</button>
+        <button id="b-timers" class="tab-btn" onclick="tab('timers')">⏲️ Таймеры</button>
+        <button id="b-finance" class="tab-btn" onclick="tab('finance')">💎 Финансы</button>
+        <button id="b-chart" class="tab-btn" onclick="tab('chart')">📊 Анализ</button>
+        <button id="b-archive" class="tab-btn" onclick="tab('archive')">⚰️ Кладбище</button>
+    </div>
+
+    <div class="content">
+        <div id="view-items" class="view active"><div id="grid" class="grid"></div></div>
+        
+        <div id="view-timers" class="view">
+            <div style="max-width:500px; background:rgba(255,255,255,0.03); padding:20px; border-radius:20px; border:1px solid rgba(255,0,255,0.1);">
+                <h3 style="color:var(--pink-light); margin-bottom:15px;">Создать таймер</h3>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <input id="t-name" class="nav-input" placeholder="Название таймера">
+                    <div style="display:flex; gap:10px;">
+                        <input id="t-h" class="nav-input" type="number" placeholder="Часы">
+                        <input id="t-m" class="nav-input" type="number" placeholder="Мин">
+                        <button class="nav-btn" onclick="addT()">ЗАПУСТИТЬ</button>
+                    </div>
+                </div>
+            </div>
+            <div id="list-timers" class="grid" style="margin-top:20px;"></div>
+        </div>
+
+        <div id="view-finance" class="view">
+            <div class="grid">
+                <div class="stat-item"><div class="stat-label">Чистая прибыль</div><div id="f-net" class="stat-value" style="font-size:24px; color:var(--pink-light)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">За Час (Среднее)</div><div id="f-hour" class="stat-value" style="color:var(--green)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">За День (24ч)</div><div id="f-day" class="stat-value" style="color:var(--green)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">За Неделю (7д)</div><div id="f-week" class="stat-value" style="color:var(--green)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">Всего потеряно</div><div id="f-total-loss" class="stat-value" style="color:var(--red)">$0</div></div>
             </div>
         </div>
-        <div class="main">
-            <div class="tabs-nav">
-                <button id="btn-items" class="tab-btn active" onclick="_tab('items')">Мои Снасти</button>
-                <button id="btn-chart" class="tab-btn" onclick="_tab('chart')">Аналитика</button>
-            </div>
-            <div id="tab-items" class="tab-content active"><div id="main_grid" class="grid"></div></div>
-            <div id="tab-chart" class="tab-content"><div class="chart-wrapper"><canvas id="myChart"></canvas></div></div>
-            <div class="bottom-bar">
-                <input id="in_name" class="nav-input" style="width: 150px;" placeholder="Название снасти">
-                <input id="in_price" class="nav-input" style="width: 85px;" type="number" placeholder="Цена $">
-                <input id="in_img" class="nav-input" style="flex:1" placeholder="URL картинки">
-                <button class="nav-btn" style="background:var(--purple); color:white;" onclick="_add()">ДОБАВИТЬ</button>
-                <div style="width:1px; background:#222; height:30px; margin: 0 5px;"></div>
-                <input id="add_p" class="nav-input" style="width:110px" type="number" placeholder="Доход $">
-                <input id="add_h" class="nav-input" style="width:65px" type="number" step="0.1" placeholder="Часы">
-                <button class="nav-btn" style="background:var(--blue); color:black;" onclick="_save()">ЗАПИСАТЬ</button>
-            </div>
-        </div>
+
+        <div id="view-chart" class="view"><div style="height:400px; background:rgba(0,0,0,0.2); padding:20px; border-radius:20px;"><canvas id="mainChart"></canvas></div></div>
+        <div id="view-archive" class="view"><div id="archive-list"></div></div>
+    </div>
+
+    <div class="bottom-control">
+        <input id="in-n" class="nav-input" placeholder="Предмет..." style="flex:3">
+        <input id="in-p" class="nav-input" type="number" placeholder="Цена $" style="flex:1">
+        <button class="nav-btn" onclick="addItem()" style="flex:1; background:var(--pink-light); color:#000">+ ПРЕДМЕТ</button>
+        <div style="width:2px; background:rgba(255,255,255,0.1); margin:0 5px;"></div>
+        <input id="in-cash" class="nav-input" type="number" placeholder="Доход..." style="flex:1.5">
+        <button class="nav-btn" onclick="addProfit()" style="flex:1; background:var(--pink-bright); color:#000">ЗАПИСАТЬ</button>
     </div>
 </div>
 
 <script>
-let myChart;
-const _PASS = "prince67";
-const _KEY = "PRINCE_V4_FINAL"; 
-let _DATA = JSON.parse(localStorage.getItem(_KEY)) || { items: [], profit: 0, hours: 0, history: [0] };
+let audioCtx = null;
+let myChart = null;
+let db = JSON.parse(localStorage.getItem('PRINCE_ULTRA_V13')) || {
+    items: [], profit: 0, loss: 0, notes: "", archive: [], timers: [], 
+    history: [{t: Date.now(), val: 0}], 
+    profitEvents: [] // Для расчета за день/неделю
+};
 
-function _check() {
-    if(document.getElementById('pass_in').value === _PASS) {
-        document.getElementById('lock-screen').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('lock-screen').style.display = 'none';
-            document.getElementById('app-content').style.display = 'block';
-            _initChart(); _draw();
-        }, 300);
-    } else { alert("Отказ в доступе!"); }
+function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+function playBell() {
+    if(!audioCtx) return;
+    [0, 0.3, 0.6].forEach(d => setTimeout(() => {
+        let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(1200, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + 0.8);
+    }, d * 1000));
 }
 
-function _tab(name) {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    document.getElementById('btn-' + name).classList.add('active');
-    if(name === 'chart') setTimeout(_updateChart, 100);
-}
+function sync() { localStorage.setItem('PRINCE_ULTRA_V13', JSON.stringify(db)); render(); }
 
-function _sync() { localStorage.setItem(_KEY, JSON.stringify(_DATA)); _draw(); if(myChart) _updateChart(); }
-
-function _draw() {
-    const g = document.getElementById("main_grid"); if(!g) return;
-    g.innerHTML = ""; let tl = 0;
-    _DATA.items.forEach((it, i) => {
-        const loss = it.price * ((100 - it.durability) / 100); tl += loss;
-        const color = it.durability > 70 ? 'var(--green)' : (it.durability > 30 ? 'var(--accent)' : 'var(--red)');
-        g.innerHTML += `<div class="card">
-            <button style="position:absolute; top:10px; right:10px; border:none; background:rgba(0,0,0,0.6); color:white; width:25px; height:25px; border-radius:50%; cursor:pointer; z-index:10; font-size:10px" onclick="_del(${i})">✕</button>
-            <img src="${it.img || 'https://via.placeholder.com/300x140?text=IMAGE'}" class="card-img" onerror="this.src='https://via.placeholder.com/300x140?text=ERROR'">
-            <div class="card-body">
-                <div class="card-title">${it.name}</div>
-                <div style="font-size:11px; color:#555; margin-bottom:8px">Закуп: $${it.price.toLocaleString()}</div>
-                <div class="card-dur" style="color:${color}">${it.durability.toFixed(1)}%</div>
-                <div class="dmg-box"><input type="number" id="dmg_v_${i}" value="1.0" step="0.1"><button onclick="_dmg(${i})">ИЗНОС</button></div>
-            </div>
-        </div>`;
-    });
-    document.getElementById("p_val").innerText = "$" + Math.round(_DATA.profit).toLocaleString();
-    document.getElementById("l_val").innerText = "$" + Math.round(tl).toLocaleString();
-    document.getElementById("h_val").innerText = _DATA.hours.toFixed(1) + "ч";
-}
-
-function _add() {
-    const n = document.getElementById("in_name").value, p = Number(document.getElementById("in_price").value), m = document.getElementById("in_img").value;
-    if(n && p) { _DATA.items.push({name:n, price:p, img:m, durability:100}); _sync(); document.getElementById("in_name").value=""; document.getElementById("in_price").value=""; document.getElementById("in_img").value=""; }
-}
-
-function _dmg(i) {
-    const v = parseFloat(document.getElementById(`dmg_v_${i}`).value);
-    if(!isNaN(v)) { _DATA.items[i].durability = Math.max(0, _DATA.items[i].durability - v); _sync(); }
-}
-
-function _del(i) { if(confirm("Удалить предмет?")) { _DATA.items.splice(i,1); _sync(); } }
-
-function _save() {
-    const m = Number(document.getElementById("add_p").value), h = Number(document.getElementById("add_h").value);
-    if(m > 0 || h > 0) {
-        _DATA.profit += m; _DATA.hours += h; _DATA.history.push(_DATA.profit);
-        if(_DATA.history.length > 30) _DATA.history.shift();
-        _sync(); document.getElementById("add_p").value = ""; document.getElementById("add_h").value = "";
+function clearStats() {
+    if(confirm("Внимание! Это удалит ВСЕ предметы, историю и прибыль. Продолжить?")) {
+        db = { items: [], profit: 0, loss: 0, notes: db.notes, archive: [], timers: [], history: [{t: Date.now(), val: 0}], profitEvents: [] };
+        sync();
     }
 }
 
-function _reset_session() { if(confirm("Это полностью очистит доход, часы и список снастей. Уверены?")) { _DATA = { items: [], profit: 0, hours: 0, history: [0] }; _sync(); } }
+function render() {
+    const net = db.profit - db.loss;
+    document.getElementById('s-net').innerText = '$' + net.toLocaleString();
+    document.getElementById('f-net').innerText = '$' + net.toLocaleString();
+    document.getElementById('f-total-loss').innerText = '$' + Math.floor(db.loss).toLocaleString();
+    document.getElementById('notes').value = db.notes;
 
-function _initChart() {
-    const ctx = document.getElementById('myChart'); if(!ctx) return;
-    myChart = new Chart(ctx.getContext('2d'), {
-        type: 'line',
-        data: {
-            labels: _DATA.history.map((_, i) => i),
-            datasets: [{ label: 'Чистая прибыль ($)', data: _DATA.history, borderColor: '#9d00ff', backgroundColor: 'rgba(157, 0, 255, 0.1)', tension: 0.4, fill: true, pointRadius: 4 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1a1a1a' }, ticks: { color: '#555' } }, x: { display: false } } }
+    // Расчет периодов
+    const now = Date.now();
+    const lastHour = db.profitEvents.filter(e => now - e.t < 3600000).reduce((a,b)=>a+b.v, 0);
+    const lastDay = db.profitEvents.filter(e => now - e.t < 86400000).reduce((a,b)=>a+b.v, 0);
+    const lastWeek = db.profitEvents.filter(e => now - e.t < 604800000).reduce((a,b)=>a+b.v, 0);
+
+    document.getElementById('s-sph').innerText = '$' + lastHour.toLocaleString();
+    document.getElementById('f-hour').innerText = '$' + lastHour.toLocaleString();
+    document.getElementById('f-day').innerText = '$' + lastDay.toLocaleString();
+    document.getElementById('f-week').innerText = '$' + lastWeek.toLocaleString();
+
+    document.getElementById('grid').innerHTML = db.items.map((it, i) => `
+        <div class="card">
+            <div class="card-header"><b>${it.name}</b><span style="color:var(--pink-light)">$${it.price}</span></div>
+            <div class="dur-val">${it.dur}%</div>
+            <div class="card-footer">
+                <button class="f-btn" onclick="dmg(${i})" style="color:var(--pink-bright); border-right:1px solid rgba(255,255,255,0.1)">-1% ИЗНОС</button>
+                <button class="f-btn" onclick="toArchive(${i})">В АРХИВ</button>
+            </div>
+        </div>`).join('');
+    
+    document.getElementById('archive-list').innerHTML = db.archive.map(it => `<div class="stat-item" style="display:flex; justify-content:space-between"><span>${it.name}</span><span style="color:var(--red)">-$${it.lossAt}</span></div>`).join('');
+    if(myChart) updateChart();
+}
+
+function addItem() {
+    const n = document.getElementById('in-n').value, p = parseInt(document.getElementById('in-p').value) || 0;
+    if(n) { db.items.push({name: n, price: p, dur: 100}); document.getElementById('in-n').value=''; document.getElementById('in-p').value=''; sync(); }
+}
+function addProfit() {
+    const v = parseInt(document.getElementById('in-cash').value) || 0;
+    if(v > 0) { 
+        db.profit += v; 
+        db.profitEvents.push({t: Date.now(), v: v});
+        db.history.push({t: Date.now(), val: db.profit - db.loss});
+        playBell(); document.getElementById('in-cash').value=''; sync(); 
+    }
+}
+function dmg(i) { if(db.items[i].dur > 0) { db.loss += db.items[i].price * 0.01; db.items[i].dur -= 1; sync(); } }
+function toArchive(i) { if(confirm("В архив?")) { let it = db.items[i]; it.lossAt = Math.floor(it.price * (100 - it.dur) / 100); db.archive.push(it); db.items.splice(i,1); sync(); } }
+
+function addT() {
+    const name = document.getElementById('t-name').value || "Таймер", h = parseInt(document.getElementById('t-h').value) || 0, m = parseInt(document.getElementById('t-m').value) || 0;
+    const totalMs = (h * 3600000) + (m * 60000);
+    if(totalMs > 0) { db.timers.push({ name: name, end: Date.now() + totalMs, done: false }); sync(); }
+}
+
+function tick() {
+    const list = document.getElementById('list-timers');
+    list.innerHTML = "";
+    db.timers.forEach((t, i) => {
+        let rem = Math.max(0, Math.floor((t.end - Date.now()) / 1000));
+        if(rem <= 0 && !t.done) { t.done = true; playBell(); }
+        let h = Math.floor(rem / 3600), m = Math.floor((rem % 3600) / 60), s = rem % 60;
+        list.innerHTML += `<div class="card" style="padding:15px; border-color:${rem<=0?'var(--pink-bright)':'rgba(255,255,255,0.1)'}"><div style="font-size:10px; color:#aaa;">${t.name}</div><div style="font-size:24px; font-weight:bold; color:${rem<=0?'var(--pink-bright)':'#fff'}">${rem <= 0 ? 'ГОТОВО!' : (h>0?h+':':'')+m+':'+(s<10?'0':'')+s}</div><button onclick="db.timers.splice(${i},1); sync()" style="margin-top:10px; background:none; border:1px solid rgba(255,255,255,0.1); color:#666; padding:5px; border-radius:5px; cursor:pointer; width:100%;">УДАЛИТЬ</button></div>`;
     });
 }
-function _updateChart() { if(myChart) { myChart.data.labels = _DATA.history.map((_, i) => i); myChart.data.datasets[0].data = _DATA.history; myChart.update(); } }
+
+function toggleNotes() { const n = document.getElementById('note-overlay'); n.style.display = (n.style.display === 'flex') ? 'none' : 'flex'; }
+function saveNotes() { db.notes = document.getElementById('notes').value; localStorage.setItem('PRINCE_ULTRA_V13', JSON.stringify(db)); }
+function tab(name) { document.querySelectorAll('.view, .tab-btn').forEach(x => x.classList.remove('active')); document.getElementById('view-'+name).classList.add('active'); document.getElementById('b-'+name).classList.add('active'); if(name === 'chart') initChart(); }
+
+function initChart() {
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    if(myChart) myChart.destroy();
+    myChart = new Chart(ctx, { 
+        type: 'line', 
+        data: { labels: db.history.map(h => new Date(h.t).toLocaleTimeString()), datasets: [{ data: db.history.map(h => h.val), borderColor: '#ff00ff', tension: 0.3, fill: true, backgroundColor: 'rgba(255,0,255,0.1)' }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { color: '#222' } } }, plugins: { legend: { display: false } } } 
+    });
+}
+function updateChart() { if(myChart) { myChart.data.labels = db.history.map(h => new Date(h.t).toLocaleTimeString()); myChart.data.datasets[0].data = db.history.map(h => h.val); myChart.update(); } }
+
+render();
+setInterval(tick, 1000);
 </script>
 </body>
 </html>
