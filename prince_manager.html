@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Prince Manager | Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root { --bg: #050505; --sidebar: #0a0a0a; --card: #111111; --accent: #ff9d00; --blue: #00d9ff; --red: #ff3333; --green: #00ff7f; --text: #ffffff; --purple: #9d00ff; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; }
+#lock-screen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+.login-card { background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--purple); text-align: center; width: 320px; box-shadow: 0 0 30px rgba(157, 0, 255, 0.1); }
+.login-card input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #222; background: #000; color: white; text-align: center; margin-bottom: 15px; outline: none; font-size: 16px; }
+.sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #151515; padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+.logo { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, #ff00ff, #8000ff, #00ffff, #ff00ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 4s linear infinite; margin-bottom: 30px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+@keyframes shine { to { background-position: 200% center; } }
+.stat-item { margin-bottom: 20px; padding: 10px; background: rgba(255,255,255,0.02); border-radius: 10px; }
+.stat-label { font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: bold; font-family: 'Consolas', monospace; }
+.dev-box { margin-top: auto; padding: 15px; background: rgba(157, 0, 255, 0.05); border-radius: 15px; border: 1px solid rgba(157, 0, 255, 0.1); text-align: center; }
+.dev-name, #ds_link { font-weight: 900; background: linear-gradient(90deg, #00d9ff, #9d00ff, #00d9ff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; text-decoration: none; display: block; font-size: 14px; cursor: pointer; }
+.tabs-nav { display: flex; gap: 10px; padding: 15px 20px 0; }
+.tab-btn { background: #151515; border: 1px solid #222; color: #888; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; transition: 0.3s; }
+.tab-btn.active { background: var(--purple); color: white; border-color: var(--purple); box-shadow: 0 0 15px rgba(157, 0, 255, 0.3); }
+.main { flex: 1; display: flex; flex-direction: column; position: relative; }
+.tab-content { display: none; flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+.tab-content.active { display: block; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; align-content: start; }
+.card { background: var(--card); border-radius: 18px; border: 1px solid #1a1a1a; overflow: hidden; position: relative; transition: 0.3s; display: flex; flex-direction: column; }
+.card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 157, 0, 0.1); }
+.card-img { width: 100%; height: 130px; background: #080808; object-fit: contain; border-bottom: 1px solid #1a1a1a; }
+.card-body { padding: 15px; }
+.card-title { font-size: 15px; font-weight: 800; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-dur { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
+.dmg-box { display: flex; background: #000; border-radius: 8px; border: 1px solid #222; overflow: hidden; }
+.dmg-box input { width: 50%; background: transparent; border: none; color: var(--accent); text-align: center; font-weight: bold; outline: none; padding: 8px; font-size: 16px; }
+.dmg-box button { width: 50%; background: var(--accent); border: none; font-weight: bold; cursor: pointer; color: #000; font-size: 11px; text-transform: uppercase; transition: 0.2s; }
+.dmg-box button:active { opacity: 0.7; }
+.bottom-bar { background: #0a0a0a; border-top: 1px solid #151515; padding: 0 20px; display: flex; gap: 10px; position: absolute; bottom: 0; width: 100%; height: 85px; align-items: center; z-index: 100; }
+.nav-input { background: #151515; border: 1px solid #222; padding: 10px; border-radius: 8px; color: white; outline: none; text-align: center; font-size: 12px; transition: 0.2s; }
+.nav-input:focus { border-color: var(--purple); background: #1a1a1a; }
+.nav-btn { border: none; border-radius: 8px; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 10px; height: 42px; padding: 0 15px; transition: 0.2s; }
+.nav-btn:active { transform: scale(0.95); }
+.chart-wrapper { background: #0a0a0a; border-radius: 20px; padding: 20px; border: 1px solid #151515; height: 100%; min-height: 400px; }
+</style>
+</head>
+<body oncontextmenu="return false;">
+
+<div id="lock-screen">
+    <div class="login-card">
+        <div class="logo">Prince Manager</div>
+        <input type="password" id="pass_in" placeholder="ВВЕДИТЕ ПАРОЛЬ" autofocus onkeypress="if(event.keyCode==13) _check()">
+        <button class="nav-btn" style="background: var(--purple); color:white; width:100%" onclick="_check()">ВОЙТИ</button>
+    </div>
+</div>
+
+<div id="app-content" style="display:none; height:100vh;">
+    <div style="display: flex; height:100%;">
+        <div class="sidebar">
+            <div class="logo">Prince Manager</div>
+            <div class="stat-item"><div class="stat-label">💰 Общий доход</div><div id="p_val" class="stat-value" style="color:var(--green)">$0</div></div>
+            <div class="stat-item"><div class="stat-label">📉 Общий убыток</div><div id="l_val" class="stat-value" style="color:var(--red)">$0</div></div>
+            <div class="stat-item"><div class="stat-label">🕒 Фарм-тайм</div><div id="h_val" class="stat-value">0.0ч</div></div>
+            <button class="nav-btn" style="background:#222; color:white; margin-top:10px; width:100%" onclick="_reset_session()">Очистить данные</button>
+            <div class="dev-box">
+                <div class="dev-name">Prince Manager</div>
+                <a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a>
+            </div>
+        </div>
+        <div class="main">
+            <div class="tabs-nav">
+                <button id="btn-items" class="tab-btn active" onclick="_tab('items')">Мои Снасти</button>
+                <button id="btn-chart" class="tab-btn" onclick="_tab('chart')">Аналитика</button>
+            </div>
+            <div id="tab-items" class="tab-content active"><div id="main_grid" class="grid"></div></div>
+            <div id="tab-chart" class="tab-content"><div class="chart-wrapper"><canvas id="myChart"></canvas></div></div>
+            <div class="bottom-bar">
+                <input id="in_name" class="nav-input" style="width: 150px;" placeholder="Название снасти">
+                <input id="in_price" class="nav-input" style="width: 85px;" type="number" placeholder="Цена $">
+                <input id="in_img" class="nav-input" style="flex:1" placeholder="URL картинки">
+                <button class="nav-btn" style="background:var(--purple); color:white;" onclick="_add()">ДОБАВИТЬ</button>
+                <div style="width:1px; background:#222; height:30px; margin: 0 5px;"></div>
+                <input id="add_p" class="nav-input" style="width:110px" type="number" placeholder="Доход $">
+                <input id="add_h" class="nav-input" style="width:65px" type="number" step="0.1" placeholder="Часы">
+                <button class="nav-btn" style="background:var(--blue); color:black;" onclick="_save()">ЗАПИСАТЬ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let myChart;
+const _PASS = "prince67";
+const _KEY = "PRINCE_V4_FINAL"; 
+let _DATA = JSON.parse(localStorage.getItem(_KEY)) || { items: [], profit: 0, hours: 0, history: [0] };
+
+function _check() {
+    if(document.getElementById('pass_in').value === _PASS) {
+        document.getElementById('lock-screen').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
+            _initChart(); _draw();
+        }, 300);
+    } else { alert("Отказ в доступе!"); }
+}
+
+function _tab(name) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('btn-' + name).classList.add('active');
+    if(name === 'chart') setTimeout(_updateChart, 100);
+}
+
+function _sync() { localStorage.setItem(_KEY, JSON.stringify(_DATA)); _draw(); if(myChart) _updateChart(); }
+
+function _draw() {
+    const g = document.getElementById("main_grid"); if(!g) return;
+    g.innerHTML = ""; let tl = 0;
+    _DATA.items.forEach((it, i) => {
+        const loss = it.price * ((100 - it.durability) / 100); tl += loss;
+        const color = it.durability > 70 ? 'var(--green)' : (it.durability > 30 ? 'var(--accent)' : 'var(--red)');
+        g.innerHTML += `<div class="card">
+            <button style="position:absolute; top:10px; right:10px; border:none; background:rgba(0,0,0,0.6); color:white; width:25px; height:25px; border-radius:50%; cursor:pointer; z-index:10; font-size:10px" onclick="_del(${i})">✕</button>
+            <img src="${it.img || 'https://via.placeholder.com/300x140?text=IMAGE'}" class="card-img" onerror="this.src='https://via.placeholder.com/300x140?text=ERROR'">
+            <div class="card-body">
+                <div class="card-title">${it.name}</div>
+                <div style="font-size:11px; color:#555; margin-bottom:8px">Закуп: $${it.price.toLocaleString()}</div>
+                <div class="card-dur" style="color:${color}">${it.durability.toFixed(1)}%</div>
+                <div class="dmg-box"><input type="number" id="dmg_v_${i}" value="1.0" step="0.1"><button onclick="_dmg(${i})">ИЗНОС</button></div>
+            </div>
+        </div>`;
+    });
+    document.getElementById("p_val").innerText = "$" + Math.round(_DATA.profit).toLocaleString();
+    document.getElementById("l_val").innerText = "$" + Math.round(tl).toLocaleString();
+    document.getElementById("h_val").innerText = _DATA.hours.toFixed(1) + "ч";
+}
+
+function _add() {
+    const n = document.getElementById("in_name").value, p = Number(document.getElementById("in_price").value), m = document.getElementById("in_img").value;
+    if(n && p) { _DATA.items.push({name:n, price:p, img:m, durability:100}); _sync(); document.getElementById("in_name").value=""; document.getElementById("in_price").value=""; document.getElementById("in_img").value=""; }
+}
+
+function _dmg(i) {
+    const v = parseFloat(document.getElementById(`dmg_v_${i}`).value);
+    if(!isNaN(v)) { _DATA.items[i].durability = Math.max(0, _DATA.items[i].durability - v); _sync(); }
+}
+
+function _del(i) { if(confirm("Удалить предмет?")) { _DATA.items.splice(i,1); _sync(); } }
+
+function _save() {
+    const m = Number(document.getElementById("add_p").value), h = Number(document.getElementById("add_h").value);
+    if(m > 0 || h > 0) {
+        _DATA.profit += m; _DATA.hours += h; _DATA.history.push(_DATA.profit);
+        if(_DATA.history.length > 30) _DATA.history.shift();
+        _sync(); document.getElementById("add_p").value = ""; document.getElementById("add_h").value = "";
+    }
+}
+
+function _reset_session() { if(confirm("Это полностью очистит доход, часы и список снастей. Уверены?")) { _DATA = { items: [], profit: 0, hours: 0, history: [0] }; _sync(); } }
+
+function _initChart() {
+    const ctx = document.getElementById('myChart'); if(!ctx) return;
+    myChart = new Chart(ctx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: _DATA.history.map((_, i) => i),
+            datasets: [{ label: 'Чистая прибыль ($)', data: _DATA.history, borderColor: '#9d00ff', backgroundColor: 'rgba(157, 0, 255, 0.1)', tension: 0.4, fill: true, pointRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#1a1a1a' }, ticks: { color: '#555' } }, x: { display: false } } }
+    });
+}
+function _updateChart() { if(myChart) { myChart.data.labels = _DATA.history.map((_, i) => i); myChart.data.datasets[0].data = _DATA.history; myChart.update(); } }
+</script>
+</body>
+</html>
