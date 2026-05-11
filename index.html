@@ -292,12 +292,10 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
             <div class="calc-wrap">
                 <h3 style="color:var(--accent-light);margin-bottom:18px;text-transform:uppercase;letter-spacing:2px;">💱 Калькулятор перекупа</h3>
                 <div class="flip-calc-grid">
+                    <input id="flip-item" class="flip-calc-input" placeholder="Название товара">
                     <input id="flip-buy"  class="flip-calc-input" type="number" placeholder="Цена покупки $" oninput="calcFlip()">
                     <input id="flip-sell" class="flip-calc-input" type="number" placeholder="Цена продажи $" oninput="calcFlip()">
-                    <div style="display:flex;flex-direction:column;gap:4px;">
-                        <label style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Комиссия площадки %</label>
-                        <input id="flip-fee" class="flip-calc-input" type="number" placeholder="Например: 5" value="0" oninput="calcFlip()">
-                    </div>
+                    
                     <div style="display:flex;flex-direction:column;gap:4px;">
                         <label style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Доп. расходы $ (налог, доставка)</label>
                         <input id="flip-extra" class="flip-calc-input" type="number" placeholder="Например: 500" value="0" oninput="calcFlip()">
@@ -327,8 +325,8 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
 
     <div class="bottom-control">
         <div class="bottom-row">
-            <span class="bottom-section-label">🎒 Предмет</span>
-            <input id="in-n" class="nav-input" placeholder="Название предмета..." style="flex:3">
+            <span class="bottom-section-label">🎣 Снасть</span>
+            <input id="in-n" class="nav-input" placeholder="Название снасти..." style="flex:3">
             <input id="in-p" class="nav-input" type="number" placeholder="Цена $" style="flex:1">
             <button class="nav-btn" onclick="addItem()" style="flex:1;background:var(--accent-light);color:#000;">+ ДОБАВИТЬ</button>
         </div>
@@ -571,7 +569,8 @@ function histFilter(f) {
 function renderHistory() {
     let all=[
         ...db.fishEvents.map(e=>({t:e.t,type:'fish',amount:e.v,label:'🎣 Рыбалка'})),
-        ...db.flipEvents.map(e=>({t:e.t,type:'flip',amount:e.v,label:'💱 Перекуп'}))
+        ...db.flipEvents.map(e=>({t:e.t,type:'flip',amount:e.v,label:'💱 Перекуп',
+    item:e.item || 'Без названия'}))
     ].sort((a,b)=>b.t-a.t);
     if(currentHistFilter!=='all') all=all.filter(d=>d.type===currentHistFilter);
     const el=document.getElementById('history-list');
@@ -583,6 +582,7 @@ function renderHistory() {
         return `<div class="history-item">
             <div>
                 <div class="hi-type">${d.label}</div>
+                <div style="font-size:12px;color:#aaa;margin-bottom:4px;">${safeHtml(d.item || '')}</div>
                 <div style="font-weight:bold;color:${pos?'var(--green)':'var(--red)'}">${pos?'+':'-'}$${Math.abs(Math.floor(d.amount)).toLocaleString()}</div>
             </div>
             <div class="hi-time">${ds}</div>
@@ -644,21 +644,97 @@ function downloadFile(name,type,content) {
 /* ── КАЛЬКУЛЯТОР ── */
 function flipNum(id){return parseFloat(document.getElementById(id).value)||0;}
 function calcFlip() {
-    const buy=flipNum('flip-buy'),sell=flipNum('flip-sell'),fee=flipNum('flip-fee'),extra=flipNum('flip-extra');
-    const feeAmt=sell*fee/100,cost=buy+extra,profit=sell-feeAmt-cost;
-    const roi=cost>0?profit/cost*100:0, margin=sell>0?profit/sell*100:0, be=fee<100?cost/(1-fee/100):0;
-    const pe=document.getElementById('flip-profit'); pe.innerText=(profit>=0?'+':'-')+money(profit); pe.style.color=profit>=0?'var(--green)':'var(--red)';
-    const re=document.getElementById('flip-roi'); re.innerText=roi.toFixed(1)+'%'; re.style.color=roi>=0?'var(--accent-light)':'var(--red)';
-    const me=document.getElementById('flip-margin'); me.innerText=margin.toFixed(1)+'%'; me.style.color=margin>=0?'var(--green)':'var(--red)';
-    document.getElementById('flip-break').innerText='$'+Math.floor(be||0).toLocaleString();
+
+    const buy=flipNum('flip-buy'),
+          sell=flipNum('flip-sell'),
+          extra=flipNum('flip-extra');
+
+    const cost=buy+extra,
+          profit=sell-cost;
+
+    const roi=cost>0?profit/cost*100:0,
+          margin=sell>0?profit/sell*100:0,
+          be=cost;
+
+    const pe=document.getElementById('flip-profit');
+
+    pe.innerText=(profit>=0?'+':'-')+money(profit);
+
+    pe.style.color=profit>=0
+        ?'var(--green)'
+        :'var(--red)';
+
+    const re=document.getElementById('flip-roi');
+
+    re.innerText=roi.toFixed(1)+'%';
+
+    re.style.color=roi>=0
+        ?'var(--accent-light)'
+        :'var(--red)';
+
+    const me=document.getElementById('flip-margin');
+
+    me.innerText=margin.toFixed(1)+'%';
+
+    me.style.color=margin>=0
+        ?'var(--green)'
+        :'var(--red)';
+
+    document.getElementById('flip-break').innerText=
+        '$'+Math.floor(be||0).toLocaleString();
 }
 function saveFlipProfit() {
-    const buy=flipNum('flip-buy'),sell=flipNum('flip-sell'),fee=flipNum('flip-fee'),extra=flipNum('flip-extra');
-    const profit=Math.floor(sell-sell*fee/100-buy-extra);
-    if(profit===0){alert('Результат нулевой.');return;}
-    if(profit>0){db.profitFlip+=profit;db.flipEvents.push({t:Date.now(),v:profit});alert('Прибыль перекупа: +$'+profit.toLocaleString());}
-    else{db.lossFlip=(db.lossFlip||0)+Math.abs(profit);alert('Убыток перекупа: -$'+Math.abs(profit).toLocaleString());}
-    db.history.push({t:Date.now(),val:netVal()}); playBell(); sync();
+
+    const item=document.getElementById('flip-item').value || 'Без названия';
+
+    const buy=flipNum('flip-buy'),
+          sell=flipNum('flip-sell'),
+          extra=flipNum('flip-extra');
+
+    const profit=Math.floor(
+        sell-buy-extra
+    );
+
+    if(profit===0){
+        alert('Результат нулевой.');
+        return;
+    }
+
+    db.flipEvents.push({
+        t:Date.now(),
+        v:profit,
+        item:item
+    });
+
+    if(profit>0){
+
+        db.profitFlip+=profit;
+
+        alert(
+            'Прибыль перекупа: +$'+
+            profit.toLocaleString()
+        );
+
+    } else {
+
+        db.lossFlip=
+            (db.lossFlip||0)+
+            Math.abs(profit);
+
+        alert(
+            'Убыток перекупа: -$'+
+            Math.abs(profit).toLocaleString()
+        );
+    }
+
+    db.history.push({
+        t:Date.now(),
+        val:netVal()
+    });
+
+    playBell();
+
+    sync();
 }
 function resetFlipCalc() {
     ['flip-buy','flip-sell'].forEach(id=>document.getElementById(id).value='');
