@@ -7,176 +7,159 @@
 <style>
 :root { 
     --bg: #030003; --sidebar: rgba(10, 0, 10, 0.9); --card: rgba(30, 0, 30, 0.7); 
-    --pink-dark: #660066; --pink-bright: #ff00ff; --pink-light: #ff80ff; --red: #ff3366; --green: #00ffcc; --text: #fff; 
+    --accent-dark: #660066; --accent-bright: #ff00ff; --accent-light: #ff80ff;
+    --red: #ff3366; --green: #00ffcc; --text: #fff;
+    --pink-dark: var(--accent-dark); --pink-bright: var(--accent-bright); --pink-light: var(--accent-light);
 }
+body.theme-pink  { --accent-dark:#660066; --accent-bright:#ff00ff; --accent-light:#ff80ff; }
+body.theme-blue  { --accent-dark:#003380; --accent-bright:#0088ff; --accent-light:#66bbff; }
+body.theme-gold  { --accent-dark:#664400; --accent-bright:#ffaa00; --accent-light:#ffdd88; }
+body.theme-green { --accent-dark:#004433; --accent-bright:#00ff88; --accent-light:#88ffcc; }
+body.theme-red   { --accent-dark:#660022; --accent-bright:#ff2255; --accent-light:#ff88aa; }
+
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; position: relative; }
 
-.bg-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a001a 0%, #030003 100%); }
-.bg-orb { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s infinite alternate ease-in-out; }
-@keyframes float { 0% { transform: translate(-20%, -20%); } 100% { transform: translate(120%, 120%); } }
+.bg-wrapper { position: fixed; inset: 0; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a001a 0%, #030003 100%); }
+.bg-orb { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255,0,255,0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s infinite alternate ease-in-out; }
+@keyframes float { 0%{transform:translate(-20%,-20%)} 100%{transform:translate(120%,120%)} }
+@keyframes textShine { 0%{background-position:0% 50%} 100%{background-position:200% center} }
 
-@keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% center; } }
-.logo { font-size: 22px; font-weight: 900; background: linear-gradient(90deg, var(--pink-light), var(--pink-bright), #fff, var(--pink-bright), var(--pink-light)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; margin-bottom: 18px; text-align: center; text-transform: uppercase; }
+.logo { font-size: 22px; font-weight: 900; background: linear-gradient(90deg, var(--accent-light), var(--accent-bright), #fff, var(--accent-bright), var(--accent-light)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; margin-bottom: 18px; text-align: center; text-transform: uppercase; }
 
-/* SIDEBAR — stats + mini chart */
-.sidebar { 
-    width: 270px; 
-    background: var(--sidebar); 
-    backdrop-filter: blur(25px); 
-    border-right: 1px solid rgba(255, 0, 255, 0.3); 
-    padding: 20px 15px; 
-    display: flex; 
-    flex-direction: column; 
-    z-index: 10;
-    overflow-y: auto;
-}
-
+.sidebar { width: 270px; background: var(--sidebar); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,0,255,0.3); padding: 20px 15px; display: flex; flex-direction: column; z-index: 10; overflow-y: auto; }
 .main { flex: 1; display: flex; flex-direction: column; z-index: 5; position: relative; overflow: hidden; }
 
-.stat-item { margin-bottom: 8px; padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 0, 255, 0.1); }
+.stat-item { margin-bottom: 8px; padding: 10px 12px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,0,255,0.1); }
 .stat-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 3px; }
 .stat-value { font-size: 17px; font-weight: bold; font-family: 'Consolas', monospace; }
 
-/* Mini chart in sidebar */
-.sidebar-chart-wrap {
-    margin-top: 12px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 14px;
-    border: 1px solid rgba(255,0,255,0.12);
-    padding: 12px;
-    flex-shrink: 0;
-}
-.sidebar-chart-title {
-    font-size: 10px;
-    color: #aaa;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
-.sidebar-chart-wrap canvas { width: 100% !important; height: 120px !important; }
+.sidebar-chart-wrap { margin-top: 12px; background: rgba(0,0,0,0.3); border-radius: 14px; border: 1px solid rgba(255,0,255,0.12); padding: 12px; flex-shrink: 0; }
+.sidebar-chart-title { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+.sidebar-chart-wrap canvas { width: 100% !important; height: 110px !important; }
 
-.tabs-nav { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
-.tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 9px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
-.tab-btn.active { background: var(--pink-bright); color: #fff; box-shadow: 0 0 15px var(--pink-bright); border: none; }
-/* Calculator tab special style */
-.tab-btn.calc-tab { background: rgba(255,0,255,0.12); border-color: rgba(255,0,255,0.3); color: var(--pink-light); }
-.tab-btn.calc-tab.active { background: var(--pink-bright); color: #000; }
+.theme-row { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
+.theme-dot { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: .2s; flex-shrink: 0; }
+.theme-dot:hover, .theme-dot.active { border-color: #fff; transform: scale(1.15); }
+.theme-dot.pink  { background: #ff00ff; }
+.theme-dot.blue  { background: #0088ff; }
+.theme-dot.gold  { background: #ffaa00; }
+.theme-dot.green { background: #00ff88; }
+.theme-dot.red   { background: #ff2255; }
+
+.tabs-nav { display: flex; gap: 7px; padding: 11px 14px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
+.tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: .3s; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
+.tab-btn.active { background: var(--accent-bright); color: #fff; box-shadow: 0 0 15px var(--accent-bright); border: none; }
+.tab-btn.calc-tab { background: rgba(255,0,255,0.1); border-color: rgba(255,0,255,0.25); color: var(--accent-light); }
+.tab-btn.calc-tab.active { background: var(--accent-bright); color: #000; }
 
 .content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 110px; }
 .view { display: none; }
 .view.active { display: block; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
-.card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; transition: 0.3s; }
+.card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; overflow: hidden; transition: .3s; }
 .card-header { padding: 12px; background: rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
-.dur-val { font-size: 32px; font-weight: 900; text-align: center; padding: 20px 0; color: var(--pink-light); }
+.dur-val { font-size: 32px; font-weight: 900; text-align: center; padding: 20px 0; }
 .card-footer { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(255,255,255,0.1); }
 .f-btn { padding: 12px; border: none; background: none; color: #aaa; font-size: 10px; cursor: pointer; font-weight: bold; }
 .f-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-.nav-input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px; color: white; outline: none; }
-.nav-btn { background: var(--pink-dark); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; height: 40px; padding: 0 15px; font-size: 11px; }
-.nav-btn:hover { background: var(--pink-bright); }
+.nav-input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; color: white; outline: none; }
+.nav-btn { background: var(--accent-dark); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; height: 40px; padding: 0 15px; font-size: 11px; }
+.nav-btn:hover { background: var(--accent-bright); }
 
-/* Bottom control — two rows clearly labeled */
-.bottom-control { 
-    position: absolute; bottom: 0; width: 100%; 
-    background: rgba(10,0,10,0.95); backdrop-filter: blur(20px); 
-    padding: 10px 18px 12px; 
-    border-top: 1px solid var(--pink-bright); 
-    z-index: 100; 
-}
+.bottom-control { position: absolute; bottom: 0; width: 100%; background: rgba(10,0,10,0.95); backdrop-filter: blur(20px); padding: 10px 18px 12px; border-top: 1px solid var(--accent-bright); z-index: 100; }
 .bottom-row { display: flex; gap: 10px; align-items: center; margin-bottom: 7px; }
 .bottom-row:last-child { margin-bottom: 0; }
 .bottom-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; min-width: 60px; }
 
-/* Finance view — two columns fishing / flip */
 .finance-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.finance-section-title { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--pink-light); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,0,255,0.2); }
+.finance-section-title { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-light); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,0,255,0.2); }
 .finance-section-title.flip-title { color: var(--green); }
 
-#note-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 550px; background: rgba(15, 0, 15, 0.98); backdrop-filter: blur(30px); border: 2px solid var(--pink-bright); border-radius: 20px; z-index: 1000; padding: 20px; flex-direction: column; }
-#ds_link { background: linear-gradient(90deg, #fff, var(--pink-light), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; text-decoration: none; font-weight: bold; font-size: 13px; }
+/* CHART TAB */
+.chart-view-wrap { background: rgba(0,0,0,0.2); padding: 18px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05); }
+.chart-toggle { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.chart-toggle button { padding: 7px 14px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #888; font-size: 11px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: .2s; }
+.chart-toggle button.active { background: var(--accent-bright); color: #000; border-color: transparent; box-shadow: 0 0 10px var(--accent-bright); }
 
-/* CALCULATOR VIEW (inline tab) */
-.calc-wrap {
-    max-width: 600px;
-    margin: 0 auto;
-}
-.flip-calc-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-.flip-calc-input {
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 11px;
-    border-radius: 8px;
-    color: white;
-    outline: none;
-    width: 100%;
-}
-.flip-calc-input:focus { border-color: var(--pink-bright); }
-.flip-calc-result {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-.flip-calc-card {
-    padding: 12px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 0, 255, 0.12);
-}
+/* HISTORY */
+.history-list { display: flex; flex-direction: column; gap: 6px; }
+.history-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: rgba(255,255,255,0.03); border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); font-size: 13px; }
+.hi-type { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.hi-time { font-size: 10px; color: #555; }
+.history-empty { color: #444; text-align: center; padding: 40px; font-size: 13px; }
+
+/* EXPORT */
+.export-wrap { max-width: 600px; }
+.export-section { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,0,255,0.1); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+.export-section h4 { color: var(--accent-light); font-size: 12px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
+.export-btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+#note-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 450px; height: 550px; background: rgba(15,0,15,0.98); backdrop-filter: blur(30px); border: 2px solid var(--accent-bright); border-radius: 20px; z-index: 1000; padding: 20px; flex-direction: column; }
+#ds_link { background: linear-gradient(90deg,#fff,var(--accent-light),#fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; text-decoration: none; font-weight: bold; font-size: 13px; }
+
+.calc-wrap { max-width: 600px; margin: 0 auto; }
+.flip-calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+.flip-calc-input { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.12); padding: 11px; border-radius: 8px; color: white; outline: none; width: 100%; }
+.flip-calc-input:focus { border-color: var(--accent-bright); }
+.flip-calc-result { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.flip-calc-card { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,0,255,0.12); }
 .flip-calc-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 5px; }
 .flip-calc-value { font-size: 20px; font-weight: bold; font-family: Consolas, monospace; }
 .flip-calc-actions { display: flex; gap: 10px; }
 .flip-calc-actions button { flex: 1; }
-.flip-calc-mini { margin-top: 12px; color: #888; font-size: 11px; line-height: 1.4; }
 </style>
 </head>
 <body onclick="initAudio()">
 
 <div class="bg-wrapper">
-    <div class="bg-orb" style="top: -10%; left: -10%;"></div>
-    <div class="bg-orb" style="bottom: -10%; right: -10%; animation-delay: -7s;"></div>
+    <div class="bg-orb" style="top:-10%;left:-10%;"></div>
+    <div class="bg-orb" style="bottom:-10%;right:-10%;animation-delay:-7s;"></div>
 </div>
 
 <div id="note-overlay">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <span style="font-weight:bold; color:var(--pink-bright)">БЛОКНОТ ПРИНЦА</span>
-        <button onclick="toggleNotes()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:20px;">✕</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+        <span style="font-weight:bold;color:var(--accent-bright)">БЛОКНОТ ПРИНЦА</span>
+        <button onclick="toggleNotes()" style="background:none;border:none;color:#fff;cursor:pointer;font-size:20px;">✕</button>
     </div>
-    <textarea id="notes" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid rgba(255,0,255,0.2); color:#ffccff; padding:15px; border-radius:10px; resize:none; outline:none;" oninput="saveNotes()"></textarea>
+    <textarea id="notes" style="flex:1;background:rgba(0,0,0,0.3);border:1px solid rgba(255,0,255,0.2);color:#ffccff;padding:15px;border-radius:10px;resize:none;outline:none;" oninput="saveNotes()"></textarea>
 </div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">Prince Manager</div>
 
-    <div class="stat-item"><div class="stat-label">🌸 Баланс (общий)</div><div id="s-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
-    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — доход</div><div id="s-fish-total" class="stat-value" style="color:var(--pink-light)">$0</div></div>
-    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — убыток (износ)</div><div id="s-fish-loss" class="stat-value" style="color:var(--red)">$0</div></div>
+    <div style="margin-bottom:12px;">
+        <div class="stat-label" style="margin-bottom:6px;">🎨 Цвет акцента</div>
+        <div class="theme-row">
+            <div class="theme-dot pink"  onclick="setTheme('pink')"  title="Розовый"></div>
+            <div class="theme-dot blue"  onclick="setTheme('blue')"  title="Синий"></div>
+            <div class="theme-dot gold"  onclick="setTheme('gold')"  title="Золотой"></div>
+            <div class="theme-dot green" onclick="setTheme('green')" title="Зелёный"></div>
+            <div class="theme-dot red"   onclick="setTheme('red')"   title="Красный"></div>
+        </div>
+    </div>
+
+    <div class="stat-item"><div class="stat-label">🌸 Баланс (общий)</div><div id="s-net" class="stat-value" style="color:var(--accent-light)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — доход</div><div id="s-fish-total" class="stat-value" style="color:var(--accent-light)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — убыток</div><div id="s-fish-loss" class="stat-value" style="color:var(--red)">$0</div></div>
     <div class="stat-item"><div class="stat-label">💱 Перекуп — доход</div><div id="s-flip-total" class="stat-value" style="color:var(--green)">$0</div></div>
     <div class="stat-item"><div class="stat-label">💱 Перекуп — убыток</div><div id="s-flip-loss" class="stat-value" style="color:var(--red)">$0</div></div>
     <div class="stat-item"><div class="stat-label">📈 Прибыль / Час</div><div id="s-sph" class="stat-value" style="color:var(--green)">$0</div></div>
 
-    <!-- Mini chart -->
     <div class="sidebar-chart-wrap">
         <div class="sidebar-chart-title">📊 График баланса</div>
         <canvas id="sideChart"></canvas>
     </div>
 
-    <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
         <button class="nav-btn" style="width:100%" onclick="toggleNotes()">📋 БЛОКНОТ</button>
-        <button class="nav-btn" style="width:100%; background: #441144;" onclick="clearStats()">🗑️ ОЧИСТИТЬ СТАТУ</button>
+        <button class="nav-btn" style="width:100%;background:#441144;" onclick="clearStats()">🗑️ ОЧИСТИТЬ СТАТУ</button>
     </div>
 
-    <div style="margin-top:auto; padding-top:15px; padding:15px; text-align:center; background:rgba(255,255,255,0.03); border-radius:15px; margin-top:15px;">
+    <div style="margin-top:15px;padding:15px;text-align:center;background:rgba(255,255,255,0.03);border-radius:15px;">
         <a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a>
     </div>
 </div>
@@ -184,26 +167,30 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
 <!-- MAIN -->
 <div class="main">
     <div class="tabs-nav">
-        <button id="b-items" class="tab-btn active" onclick="tab('items')">🎒 Снаряжение</button>
-        <button id="b-timers" class="tab-btn" onclick="tab('timers')">⏲️ Таймеры</button>
+        <button id="b-items"   class="tab-btn active" onclick="tab('items')">🎒 Снаряжение</button>
+        <button id="b-timers"  class="tab-btn" onclick="tab('timers')">⏲️ Таймеры</button>
         <button id="b-finance" class="tab-btn" onclick="tab('finance')">💎 Финансы</button>
-        <button id="b-calc" class="tab-btn calc-tab" onclick="tab('calc')">💱 Калькулятор</button>
+        <button id="b-chart"   class="tab-btn" onclick="tab('chart')">📊 Анализ</button>
+        <button id="b-history" class="tab-btn" onclick="tab('history')">📜 История</button>
+        <button id="b-export"  class="tab-btn" onclick="tab('export')">📤 Экспорт</button>
+        <button id="b-calc"    class="tab-btn calc-tab" onclick="tab('calc')">💱 Калькулятор</button>
         <button id="b-archive" class="tab-btn" onclick="tab('archive')">⚰️ Кладбище</button>
     </div>
 
     <div class="content">
+
         <!-- СНАРЯЖЕНИЕ -->
         <div id="view-items" class="view active">
             <div id="grid" class="grid"></div>
         </div>
-        
+
         <!-- ТАЙМЕРЫ -->
         <div id="view-timers" class="view">
-            <div style="max-width:500px; background:rgba(255,255,255,0.03); padding:20px; border-radius:20px; border:1px solid rgba(255,0,255,0.1);">
-                <h3 style="color:var(--pink-light); margin-bottom:15px;">Создать таймер</h3>
-                <div style="display:flex; flex-direction:column; gap:10px;">
+            <div style="max-width:500px;background:rgba(255,255,255,0.03);padding:20px;border-radius:20px;border:1px solid rgba(255,0,255,0.1);">
+                <h3 style="color:var(--accent-light);margin-bottom:15px;">Создать таймер</h3>
+                <div style="display:flex;flex-direction:column;gap:10px;">
                     <input id="t-name" class="nav-input" placeholder="Название таймера">
-                    <div style="display:flex; gap:10px;">
+                    <div style="display:flex;gap:10px;">
                         <input id="t-h" class="nav-input" type="number" placeholder="Часы">
                         <input id="t-m" class="nav-input" type="number" placeholder="Мин">
                         <button class="nav-btn" onclick="addT()">ЗАПУСТИТЬ</button>
@@ -213,20 +200,18 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
             <div id="list-timers" class="grid" style="margin-top:20px;"></div>
         </div>
 
-        <!-- ФИНАНСЫ — разделены по источникам -->
+        <!-- ФИНАНСЫ -->
         <div id="view-finance" class="view">
             <div class="finance-cols">
-                <!-- Рыбалка -->
                 <div>
                     <div class="finance-section-title">🎣 Рыбалка</div>
                     <div class="grid" style="grid-template-columns:1fr;">
-                        <div class="stat-item"><div class="stat-label">Всего с рыбалки</div><div id="ff-total" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">Всего с рыбалки</div><div id="ff-total" class="stat-value" style="color:var(--accent-light)">$0</div></div>
                         <div class="stat-item"><div class="stat-label">За Час</div><div id="ff-hour" class="stat-value" style="color:var(--green)">$0</div></div>
                         <div class="stat-item"><div class="stat-label">За День (24ч)</div><div id="ff-day" class="stat-value" style="color:var(--green)">$0</div></div>
                         <div class="stat-item"><div class="stat-label">За Неделю (7д)</div><div id="ff-week" class="stat-value" style="color:var(--green)">$0</div></div>
                     </div>
                 </div>
-                <!-- Перекуп -->
                 <div>
                     <div class="finance-section-title flip-title">💱 Перекуп (флип)</div>
                     <div class="grid" style="grid-template-columns:1fr;">
@@ -237,52 +222,98 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
                     </div>
                 </div>
             </div>
-            <!-- Общее -->
-            <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                <div class="stat-item"><div class="stat-label">💀 Всего потеряно (износ)</div><div id="f-total-loss" class="stat-value" style="color:var(--red)">$0</div></div>
-                <div class="stat-item"><div class="stat-label">🌸 Чистый баланс</div><div id="f-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+            <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div class="stat-item"><div class="stat-label">💀 Всего потеряно</div><div id="f-total-loss" class="stat-value" style="color:var(--red)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">🌸 Чистый баланс</div><div id="f-net" class="stat-value" style="color:var(--accent-light)">$0</div></div>
             </div>
         </div>
 
-        <!-- КАЛЬКУЛЯТОР (вкладка) -->
+        <!-- АНАЛИЗ — графики -->
+        <div id="view-chart" class="view">
+            <div class="chart-view-wrap">
+                <div class="chart-toggle">
+                    <button id="ct-all"  class="active" onclick="chartMode('all')">📊 Общий баланс</button>
+                    <button id="ct-fish" onclick="chartMode('fish')">🎣 Рыбалка</button>
+                    <button id="ct-flip" onclick="chartMode('flip')">💱 Перекуп</button>
+                    <button id="ct-both" onclick="chartMode('both')">⚡ Оба вместе</button>
+                </div>
+                <div style="height:360px;"><canvas id="mainChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- ИСТОРИЯ СДЕЛОК -->
+        <div id="view-history" class="view">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+                <h3 style="color:var(--accent-light);text-transform:uppercase;font-size:13px;letter-spacing:2px;">📜 История сделок</h3>
+                <div style="display:flex;gap:8px;">
+                    <button class="nav-btn" id="hf-all"  onclick="histFilter('all')"  style="font-size:10px;height:32px;background:var(--accent-bright);color:#000;">Все</button>
+                    <button class="nav-btn" id="hf-fish" onclick="histFilter('fish')" style="font-size:10px;height:32px;">🎣 Рыбалка</button>
+                    <button class="nav-btn" id="hf-flip" onclick="histFilter('flip')" style="font-size:10px;height:32px;">💱 Перекуп</button>
+                </div>
+            </div>
+            <div id="history-list" class="history-list"></div>
+        </div>
+
+        <!-- ЭКСПОРТ -->
+        <div id="view-export" class="view">
+            <div class="export-wrap">
+                <div class="export-section">
+                    <h4>📋 Скопировать отчёт</h4>
+                    <div class="export-btn-row">
+                        <button class="nav-btn" onclick="copyReport('day')">📅 За сегодня</button>
+                        <button class="nav-btn" onclick="copyReport('week')">📆 За неделю</button>
+                        <button class="nav-btn" onclick="copyReport('all')">📊 Всё время</button>
+                    </div>
+                </div>
+                <div class="export-section">
+                    <h4>💾 Скачать CSV</h4>
+                    <div class="export-btn-row">
+                        <button class="nav-btn" onclick="exportCSV('fish')">🎣 Рыбалка CSV</button>
+                        <button class="nav-btn" onclick="exportCSV('flip')">💱 Перекуп CSV</button>
+                        <button class="nav-btn" onclick="exportCSV('all')" style="background:var(--accent-bright);color:#000;">📥 Всё CSV</button>
+                    </div>
+                </div>
+                <div class="export-section">
+                    <h4>💿 Резервная копия</h4>
+                    <div class="export-btn-row">
+                        <button class="nav-btn" onclick="exportJSON()">⬇️ Сохранить JSON</button>
+                        <label class="nav-btn" style="display:flex;align-items:center;cursor:pointer;height:40px;padding:0 15px;">
+                            ⬆️ Загрузить JSON
+                            <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;">
+                        </label>
+                    </div>
+                </div>
+                <div id="export-preview" style="display:none;margin-top:14px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;font-family:Consolas,monospace;font-size:12px;color:#ccc;white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.6;"></div>
+            </div>
+        </div>
+
+        <!-- КАЛЬКУЛЯТОР -->
         <div id="view-calc" class="view">
             <div class="calc-wrap">
-                <h3 style="color:var(--pink-light); margin-bottom:18px; text-transform:uppercase; letter-spacing:2px;">💱 Калькулятор перекупа</h3>
+                <h3 style="color:var(--accent-light);margin-bottom:18px;text-transform:uppercase;letter-spacing:2px;">💱 Калькулятор перекупа</h3>
                 <div class="flip-calc-grid">
-                    <input id="flip-buy" class="flip-calc-input" type="number" placeholder="Цена покупки $" oninput="calcFlip()">
+                    <input id="flip-buy"  class="flip-calc-input" type="number" placeholder="Цена покупки $" oninput="calcFlip()">
                     <input id="flip-sell" class="flip-calc-input" type="number" placeholder="Цена продажи $" oninput="calcFlip()">
-                    <div style="display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Комиссия площадки %</label>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <label style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Комиссия площадки %</label>
                         <input id="flip-fee" class="flip-calc-input" type="number" placeholder="Например: 5" value="0" oninput="calcFlip()">
                     </div>
-                    <div style="display:flex; flex-direction:column; gap:4px;">
-                        <label style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Доп. расходы $ (налог, доставка)</label>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <label style="font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;">Доп. расходы $ (налог, доставка)</label>
                         <input id="flip-extra" class="flip-calc-input" type="number" placeholder="Например: 500" value="0" oninput="calcFlip()">
                     </div>
                 </div>
                 <div class="flip-calc-result">
-                    <div class="flip-calc-card">
-                        <div class="flip-calc-label">Чистая прибыль</div>
-                        <div id="flip-profit" class="flip-calc-value" style="color:var(--green)">+$0</div>
-                    </div>
-                    <div class="flip-calc-card">
-                        <div class="flip-calc-label">ROI</div>
-                        <div id="flip-roi" class="flip-calc-value" style="color:var(--pink-light)">0%</div>
-                    </div>
-                    <div class="flip-calc-card">
-                        <div class="flip-calc-label">Маржа</div>
-                        <div id="flip-margin" class="flip-calc-value" style="color:var(--green)">0%</div>
-                    </div>
-                    <div class="flip-calc-card">
-                        <div class="flip-calc-label">Безубыток</div>
-                        <div id="flip-break" class="flip-calc-value">$0</div>
-                    </div>
+                    <div class="flip-calc-card"><div class="flip-calc-label">Чистая прибыль</div><div id="flip-profit" class="flip-calc-value" style="color:var(--green)">+$0</div></div>
+                    <div class="flip-calc-card"><div class="flip-calc-label">ROI</div><div id="flip-roi" class="flip-calc-value" style="color:var(--accent-light)">0%</div></div>
+                    <div class="flip-calc-card"><div class="flip-calc-label">Маржа</div><div id="flip-margin" class="flip-calc-value" style="color:var(--green)">0%</div></div>
+                    <div class="flip-calc-card"><div class="flip-calc-label">Безубыток</div><div id="flip-break" class="flip-calc-value">$0</div></div>
                 </div>
                 <div class="flip-calc-actions">
-                    <button class="nav-btn" onclick="saveFlipProfit()" style="background:var(--pink-bright); color:#000; height:44px;">ЗАПИСАТЬ В ПЕРЕКУП</button>
-                    <button class="nav-btn" onclick="resetFlipCalc()" style="background:#441144; height:44px;">СБРОС</button>
+                    <button class="nav-btn" onclick="saveFlipProfit()" style="background:var(--accent-bright);color:#000;height:44px;">ЗАПИСАТЬ В ПЕРЕКУП</button>
+                    <button class="nav-btn" onclick="resetFlipCalc()" style="background:#441144;height:44px;">СБРОС</button>
                 </div>
-                <div class="flip-calc-mini" style="margin-top:14px;">
+                <div style="margin-top:14px;color:#888;font-size:11px;line-height:1.5;">
                     Формула: продажа − комиссия − покупка − доп. расходы. Прибыль записывается в раздел «Перекуп».
                 </div>
             </div>
@@ -294,20 +325,17 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
         </div>
     </div>
 
-    <!-- BOTTOM CONTROL — two labeled rows -->
     <div class="bottom-control">
-        <!-- Row 1: предмет -->
         <div class="bottom-row">
             <span class="bottom-section-label">🎒 Предмет</span>
             <input id="in-n" class="nav-input" placeholder="Название предмета..." style="flex:3">
             <input id="in-p" class="nav-input" type="number" placeholder="Цена $" style="flex:1">
-            <button class="nav-btn" onclick="addItem()" style="flex:1; background:var(--pink-light); color:#000;">+ ДОБАВИТЬ</button>
+            <button class="nav-btn" onclick="addItem()" style="flex:1;background:var(--accent-light);color:#000;">+ ДОБАВИТЬ</button>
         </div>
-        <!-- Row 2: доход рыбалки -->
         <div class="bottom-row">
             <span class="bottom-section-label">🎣 Рыбалка</span>
             <input id="in-fish" class="nav-input" type="number" placeholder="Доход с рыбалки $" style="flex:2">
-            <button class="nav-btn" onclick="addFishProfit()" style="flex:1; background:var(--pink-bright); color:#000;">ЗАПИСАТЬ</button>
+            <button class="nav-btn" onclick="addFishProfit()" style="flex:1;background:var(--accent-bright);color:#000;">ЗАПИСАТЬ</button>
         </div>
     </div>
 </div>
@@ -315,341 +343,333 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
 <script>
 let audioCtx = null;
 let sideChart = null;
+let mainChart = null;
+let currentChartMode = 'all';
+let currentHistFilter = 'all';
 
+/* ── DB ── */
 let db = JSON.parse(localStorage.getItem('PRINCE_ULTRA_V14')) || null;
-
-// Migration from old key
-if(!db) {
+if (!db) {
     const old = localStorage.getItem('PRINCE_ULTRA_V13');
-    if(old) {
-        try {
-            const o = JSON.parse(old);
-            db = {
-                items: o.items || [],
-                profitFish: o.profit || 0,
-                profitFlip: 0,
-                loss: o.loss || 0,
-                notes: o.notes || "",
-                archive: o.archive || [],
-                timers: o.timers || [],
-                history: o.history || [{t: Date.now(), val: 0}],
-                fishEvents: o.profitEvents || [],
-                flipEvents: []
-            };
-        } catch(e) {}
-    }
+    if (old) { try { const o=JSON.parse(old); db={items:o.items||[],profitFish:o.profit||0,profitFlip:0,loss:o.loss||0,lossFlip:0,notes:o.notes||"",archive:o.archive||[],timers:o.timers||[],history:o.history||[{t:Date.now(),val:0}],fishEvents:o.profitEvents||[],flipEvents:[]}; } catch(e){} }
 }
+if (!db) db={items:[],profitFish:0,profitFlip:0,loss:0,lossFlip:0,notes:"",archive:[],timers:[],history:[{t:Date.now(),val:0}],fishEvents:[],flipEvents:[]};
+['items','archive','timers','fishEvents','flipEvents'].forEach(k=>{ if(!db[k]) db[k]=[]; });
+if(!db.history||!db.history.length) db.history=[{t:Date.now(),val:0}];
+if(typeof db.notes!=='string') db.notes="";
+['profitFish','profitFlip','loss','lossFlip'].forEach(k=>{ if(!db[k]) db[k]=0; });
 
-if(!db) {
-    db = {
-        items: [], profitFish: 0, profitFlip: 0, loss: 0, notes: "", archive: [],
-        timers: [], history: [{t: Date.now(), val: 0}],
-        fishEvents: [], flipEvents: []
-    };
+/* ── THEME ── */
+let currentTheme = localStorage.getItem('PRINCE_THEME') || 'pink';
+function initTheme() {
+    document.body.className = 'theme-' + currentTheme;
+    document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d.classList.contains(currentTheme)));
 }
+function setTheme(t) {
+    currentTheme = t; localStorage.setItem('PRINCE_THEME', t);
+    document.body.className = 'theme-' + t;
+    document.querySelectorAll('.theme-dot').forEach(d => d.classList.toggle('active', d.classList.contains(t)));
+    if(sideChart){sideChart.destroy();sideChart=null;}
+    if(mainChart){mainChart.destroy();mainChart=null;}
+    updateSideChart();
+    if(document.getElementById('view-chart').classList.contains('active')) buildMainChart();
+}
+function accentBright() { return getComputedStyle(document.body).getPropertyValue('--accent-bright').trim(); }
 
-// Ensure all fields exist
-if(!db.items) db.items = [];
-if(!db.archive) db.archive = [];
-if(!db.timers) db.timers = [];
-if(!db.history) db.history = [{t: Date.now(), val: 0}];
-if(!db.fishEvents) db.fishEvents = [];
-if(!db.flipEvents) db.flipEvents = [];
-if(typeof db.notes !== 'string') db.notes = "";
-if(!db.profitFish) db.profitFish = 0;
-if(!db.profitFlip) db.profitFlip = 0;
-
-function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-
+/* ── AUDIO ── */
+function initAudio() { if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)(); }
 function playBell() {
     if(!audioCtx) return;
-    [0, 0.3, 0.6].forEach(d => setTimeout(() => {
-        let o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = 'sine'; o.frequency.setValueAtTime(1200, audioCtx.currentTime);
-        g.gain.setValueAtTime(0.3, audioCtx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
-        o.connect(g); g.connect(audioCtx.destination);
-        o.start(); o.stop(audioCtx.currentTime + 0.8);
-    }, d * 1000));
+    [0,.3,.6].forEach(d=>setTimeout(()=>{ let o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='sine'; o.frequency.setValueAtTime(1200,audioCtx.currentTime); g.gain.setValueAtTime(0.3,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01,audioCtx.currentTime+0.8); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.8); },d*1000));
 }
 
-function sync() { localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db)); render(); }
+function sync() { localStorage.setItem('PRINCE_ULTRA_V14',JSON.stringify(db)); render(); }
+function netVal() { return db.profitFish+db.profitFlip-db.loss-(db.lossFlip||0); }
+function safeHtml(v) { return String(v??'').replace(/[&<>"']/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s])); }
+function money(v) { return '$'+Math.floor(Math.abs(v||0)).toLocaleString(); }
+function filterEvents(arr,ms) { const n=Date.now(); return arr.filter(e=>n-e.t<ms).reduce((a,b)=>a+b.v,0); }
 
 function clearStats() {
     if(confirm("Внимание! Это удалит ВСЕ предметы, историю и прибыль. Продолжить?")) {
-        db = { 
-            items: [], profitFish: 0, profitFlip: 0, loss: 0, lossFlip: 0, notes: db.notes, 
-            archive: [], timers: [], history: [{t: Date.now(), val: 0}],
-            fishEvents: [], flipEvents: []
-        };
+        db={items:[],profitFish:0,profitFlip:0,loss:0,lossFlip:0,notes:db.notes,archive:[],timers:[],history:[{t:Date.now(),val:0}],fishEvents:[],flipEvents:[]};
+        if(mainChart){mainChart.destroy();mainChart=null;}
         sync();
     }
 }
 
-function safeHtml(v) {
-    return String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
-}
-
-function money(v) { return '$' + Math.floor(Math.abs(v || 0)).toLocaleString(); }
-
-function filterEvents(arr, ms) {
-    const now = Date.now();
-    return arr.filter(e => now - e.t < ms).reduce((a,b) => a + b.v, 0);
-}
-
+/* ── RENDER ── */
 function render() {
-    const lossFlip = db.lossFlip || 0;
-    const net = db.profitFish + db.profitFlip - db.loss - lossFlip;
-
-    // Sidebar stats
-    document.getElementById('s-net').innerText = '$' + Math.floor(net).toLocaleString();
-    document.getElementById('s-fish-total').innerText = '$' + Math.floor(db.profitFish).toLocaleString();
-    document.getElementById('s-fish-loss').innerText = '-$' + Math.floor(db.loss).toLocaleString();
-    document.getElementById('s-flip-total').innerText = '$' + Math.floor(db.profitFlip).toLocaleString();
-    document.getElementById('s-flip-loss').innerText = '-$' + Math.floor(lossFlip).toLocaleString();
-
-    const fishHour = filterEvents(db.fishEvents, 3600000);
-    const flipHour = filterEvents(db.flipEvents, 3600000);
-    document.getElementById('s-sph').innerText = '$' + Math.floor(fishHour + flipHour).toLocaleString();
-
-    // Finance — fishing
-    document.getElementById('ff-total').innerText = '$' + Math.floor(db.profitFish).toLocaleString();
-    document.getElementById('ff-hour').innerText = '$' + Math.floor(fishHour).toLocaleString();
-    document.getElementById('ff-day').innerText = '$' + Math.floor(filterEvents(db.fishEvents, 86400000)).toLocaleString();
-    document.getElementById('ff-week').innerText = '$' + Math.floor(filterEvents(db.fishEvents, 604800000)).toLocaleString();
-
-    // Finance — flip
-    document.getElementById('fp-total').innerText = '$' + Math.floor(db.profitFlip).toLocaleString();
-    document.getElementById('fp-hour').innerText = '$' + Math.floor(flipHour).toLocaleString();
-    document.getElementById('fp-day').innerText = '$' + Math.floor(filterEvents(db.flipEvents, 86400000)).toLocaleString();
-    document.getElementById('fp-week').innerText = '$' + Math.floor(filterEvents(db.flipEvents, 604800000)).toLocaleString();
-
-    // Finance — общее
-    document.getElementById('f-net').innerText = '$' + Math.floor(net).toLocaleString();
-    document.getElementById('f-total-loss').innerText = '-$' + Math.floor(db.loss + lossFlip).toLocaleString();
-
-    // Notes
+    const lf=db.lossFlip||0, net=netVal();
+    document.getElementById('s-net').innerText       = '$'+Math.floor(net).toLocaleString();
+    document.getElementById('s-fish-total').innerText = '$'+Math.floor(db.profitFish).toLocaleString();
+    document.getElementById('s-fish-loss').innerText  = '-$'+Math.floor(db.loss).toLocaleString();
+    document.getElementById('s-flip-total').innerText = '$'+Math.floor(db.profitFlip).toLocaleString();
+    document.getElementById('s-flip-loss').innerText  = '-$'+Math.floor(lf).toLocaleString();
+    const fh=filterEvents(db.fishEvents,3600000), ph=filterEvents(db.flipEvents,3600000);
+    document.getElementById('s-sph').innerText = '$'+Math.floor(fh+ph).toLocaleString();
+    document.getElementById('ff-total').innerText = '$'+Math.floor(db.profitFish).toLocaleString();
+    document.getElementById('ff-hour').innerText  = '$'+Math.floor(fh).toLocaleString();
+    document.getElementById('ff-day').innerText   = '$'+Math.floor(filterEvents(db.fishEvents,86400000)).toLocaleString();
+    document.getElementById('ff-week').innerText  = '$'+Math.floor(filterEvents(db.fishEvents,604800000)).toLocaleString();
+    document.getElementById('fp-total').innerText = '$'+Math.floor(db.profitFlip).toLocaleString();
+    document.getElementById('fp-hour').innerText  = '$'+Math.floor(ph).toLocaleString();
+    document.getElementById('fp-day').innerText   = '$'+Math.floor(filterEvents(db.flipEvents,86400000)).toLocaleString();
+    document.getElementById('fp-week').innerText  = '$'+Math.floor(filterEvents(db.flipEvents,604800000)).toLocaleString();
+    document.getElementById('f-net').innerText        = '$'+Math.floor(net).toLocaleString();
+    document.getElementById('f-total-loss').innerText = '-$'+Math.floor(db.loss+lf).toLocaleString();
     document.getElementById('notes').value = db.notes;
 
-    // Items grid
-    document.getElementById('grid').innerHTML = db.items.map((it, i) => `
+    document.getElementById('grid').innerHTML = db.items.map((it,i)=>`
         <div class="card">
-            <div class="card-header"><b>${safeHtml(it.name)}</b><span style="color:var(--pink-light)">$${Math.floor(it.price).toLocaleString()}</span></div>
-            <div class="dur-val">${it.dur}%</div>
+            <div class="card-header"><b>${safeHtml(it.name)}</b><span style="color:var(--accent-light)">$${Math.floor(it.price).toLocaleString()}</span></div>
+            <div class="dur-val" style="color:${it.dur<30?'var(--red)':it.dur<60?'#ffaa00':'var(--accent-light)'}">${it.dur}%</div>
             <div class="card-footer">
-                <button class="f-btn" onclick="dmg(${i})" style="color:var(--pink-bright); border-right:1px solid rgba(255,255,255,0.1)">-1% ИЗНОС</button>
+                <button class="f-btn" onclick="dmg(${i})" style="color:var(--accent-bright);border-right:1px solid rgba(255,255,255,0.1)">-1% ИЗНОС</button>
                 <button class="f-btn" onclick="toArchive(${i})">В АРХИВ</button>
             </div>
         </div>`).join('');
-    
-    // Archive
-    document.getElementById('archive-list').innerHTML = db.archive.length === 0 
-        ? '<div style="color:#555; text-align:center; padding:40px;">Кладбище пусто</div>'
-        : db.archive.map(it => `<div class="stat-item" style="display:flex; justify-content:space-between"><span>${safeHtml(it.name)}</span><span style="color:var(--red)">-$${Math.floor(it.lossAt).toLocaleString()}</span></div>`).join('');
 
+    document.getElementById('archive-list').innerHTML = db.archive.length===0
+        ? '<div style="color:#555;text-align:center;padding:40px;">Кладбище пусто</div>'
+        : db.archive.map(it=>`<div class="stat-item" style="display:flex;justify-content:space-between"><span>${safeHtml(it.name)}</span><span style="color:var(--red)">-$${Math.floor(it.lossAt).toLocaleString()}</span></div>`).join('');
+
+    renderHistory();
     updateSideChart();
+    if(mainChart) buildMainChart();
 }
 
+/* ── ITEMS ── */
 function addItem() {
-    const n = document.getElementById('in-n').value;
-    const p = parseInt(document.getElementById('in-p').value) || 0;
-    if(n) {
-        db.items.push({name: n, price: p, dur: 100});
-        document.getElementById('in-n').value='';
-        document.getElementById('in-p').value='';
-        sync();
-    }
+    const n=document.getElementById('in-n').value, p=parseInt(document.getElementById('in-p').value)||0;
+    if(n){db.items.push({name:n,price:p,dur:100});document.getElementById('in-n').value='';document.getElementById('in-p').value='';sync();}
+}
+function dmg(i) {
+    if(db.items[i].dur>0){db.loss+=db.items[i].price*0.01;db.items[i].dur-=1;db.history.push({t:Date.now(),val:netVal()});sync();}
+}
+function toArchive(i) {
+    if(confirm("В архив?")){let it=db.items[i];it.lossAt=Math.floor(it.price*(100-it.dur)/100);db.archive.push(it);db.items.splice(i,1);sync();}
 }
 
+/* ── FISH ── */
 function addFishProfit() {
-    const v = parseInt(document.getElementById('in-fish').value) || 0;
-    if(v > 0) { 
-        db.profitFish += v; 
-        db.fishEvents.push({t: Date.now(), v: v});
-        db.history.push({t: Date.now(), val: db.profitFish + db.profitFlip - db.loss});
+    const v=parseInt(document.getElementById('in-fish').value)||0;
+    if(v>0){
+        db.profitFish+=v;
+        db.fishEvents.push({t:Date.now(),v});
+        db.history.push({t:Date.now(),val:netVal()});
         playBell();
         document.getElementById('in-fish').value='';
-        sync(); 
-    }
-}
-
-function dmg(i) {
-    if(db.items[i].dur > 0) {
-        db.loss += db.items[i].price * 0.01;
-        db.items[i].dur -= 1;
         sync();
     }
 }
 
-function toArchive(i) {
-    if(confirm("В архив?")) {
-        let it = db.items[i];
-        it.lossAt = Math.floor(it.price * (100 - it.dur) / 100);
-        db.archive.push(it);
-        db.items.splice(i,1);
-        sync();
-    }
-}
-
+/* ── TIMERS ── */
 function addT() {
-    const name = document.getElementById('t-name').value || "Таймер";
-    const h = parseInt(document.getElementById('t-h').value) || 0;
-    const m = parseInt(document.getElementById('t-m').value) || 0;
-    const totalMs = (h * 3600000) + (m * 60000);
-    if(totalMs > 0) {
-        db.timers.push({ name: name, end: Date.now() + totalMs, done: false });
-        document.getElementById('t-name').value = '';
-        document.getElementById('t-h').value = '';
-        document.getElementById('t-m').value = '';
-        sync();
-    }
+    const name=document.getElementById('t-name').value||"Таймер";
+    const h=parseInt(document.getElementById('t-h').value)||0, m=parseInt(document.getElementById('t-m').value)||0;
+    const ms=(h*3600000)+(m*60000);
+    if(ms>0){db.timers.push({name,end:Date.now()+ms,done:false});document.getElementById('t-name').value='';document.getElementById('t-h').value='';document.getElementById('t-m').value='';sync();}
 }
-
 function tick() {
-    const list = document.getElementById('list-timers');
-    list.innerHTML = "";
-    db.timers.forEach((t, i) => {
-        let rem = Math.max(0, Math.floor((t.end - Date.now()) / 1000));
-        if(rem <= 0 && !t.done) { t.done = true; playBell(); localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db)); }
-        let h = Math.floor(rem / 3600), m = Math.floor((rem % 3600) / 60), s = rem % 60;
-        list.innerHTML += `<div class="card" style="padding:15px; border-color:${rem<=0?'var(--pink-bright)':'rgba(255,255,255,0.1)'}"><div style="font-size:10px; color:#aaa;">${safeHtml(t.name)}</div><div style="font-size:24px; font-weight:bold; color:${rem<=0?'var(--pink-bright)':'#fff'}">${rem <= 0 ? 'ГОТОВО!' : (h>0?h+':':'')+m+':'+(s<10?'0':'')+s}</div><button onclick="db.timers.splice(${i},1); sync()" style="margin-top:10px; background:none; border:1px solid rgba(255,255,255,0.1); color:#666; padding:5px; border-radius:5px; cursor:pointer; width:100%;">УДАЛИТЬ</button></div>`;
+    const list=document.getElementById('list-timers'); list.innerHTML="";
+    db.timers.forEach((t,i)=>{
+        let rem=Math.max(0,Math.floor((t.end-Date.now())/1000));
+        if(rem<=0&&!t.done){t.done=true;playBell();localStorage.setItem('PRINCE_ULTRA_V14',JSON.stringify(db));}
+        let h=Math.floor(rem/3600),m=Math.floor((rem%3600)/60),s=rem%60;
+        list.innerHTML+=`<div class="card" style="padding:15px;border-color:${rem<=0?'var(--accent-bright)':'rgba(255,255,255,0.1)'}"><div style="font-size:10px;color:#aaa;">${safeHtml(t.name)}</div><div style="font-size:24px;font-weight:bold;color:${rem<=0?'var(--accent-bright)':'#fff'}">${rem<=0?'ГОТОВО!':(h>0?h+':':'')+m+':'+(s<10?'0':'')+s}</div><button onclick="db.timers.splice(${i},1);sync()" style="margin-top:10px;background:none;border:1px solid rgba(255,255,255,0.1);color:#666;padding:5px;border-radius:5px;cursor:pointer;width:100%;">УДАЛИТЬ</button></div>`;
     });
 }
 
-function toggleNotes() {
-    const n = document.getElementById('note-overlay');
-    n.style.display = (n.style.display === 'flex') ? 'none' : 'flex';
-}
+/* ── NOTES ── */
+function toggleNotes(){const n=document.getElementById('note-overlay');n.style.display=(n.style.display==='flex')?'none':'flex';}
+function saveNotes(){db.notes=document.getElementById('notes').value;localStorage.setItem('PRINCE_ULTRA_V14',JSON.stringify(db));}
 
-function saveNotes() {
-    db.notes = document.getElementById('notes').value;
-    localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db));
-}
-
+/* ── TAB ── */
 function tab(name) {
-    document.querySelectorAll('.view, .tab-btn').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.view,.tab-btn').forEach(x=>x.classList.remove('active'));
     document.getElementById('view-'+name).classList.add('active');
     document.getElementById('b-'+name).classList.add('active');
+    if(name==='chart'){buildMainChart();}
+    if(name==='history'){renderHistory();}
 }
 
-/* ---- Side Chart ---- */
+/* ── SIDE CHART ── */
 function updateSideChart() {
-    const ctx = document.getElementById('sideChart').getContext('2d');
-    const labels = db.history.map(h => new Date(h.t).toLocaleTimeString());
-    const data = db.history.map(h => h.val);
+    const ctx=document.getElementById('sideChart').getContext('2d');
+    const labels=db.history.map(h=>new Date(h.t).toLocaleTimeString());
+    const data=db.history.map(h=>h.val);
+    const ac=accentBright();
+    if(sideChart){sideChart.data.labels=labels;sideChart.data.datasets[0].data=data;sideChart.data.datasets[0].borderColor=ac;sideChart.update('none');return;}
+    sideChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data,borderColor:ac,backgroundColor:'rgba(255,0,255,0.07)',tension:0.3,fill:true,pointRadius:0,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,animation:false,scales:{x:{display:false},y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#666',font:{size:9},maxTicksLimit:4}}},plugins:{legend:{display:false}}}});
+}
 
-    if(sideChart) {
-        sideChart.data.labels = labels;
-        sideChart.data.datasets[0].data = data;
-        sideChart.update('none');
-        return;
+/* ── MAIN CHART ── */
+function chartMode(mode) {
+    currentChartMode=mode;
+    document.querySelectorAll('.chart-toggle button').forEach(b=>b.classList.remove('active'));
+    document.getElementById('ct-'+mode).classList.add('active');
+    buildMainChart();
+}
+
+function runningSum(events) {
+    const sorted=[...events].sort((a,b)=>a.t-b.t);
+    let run=0; return sorted.map(e=>{run+=e.v;return{t:e.t,val:run};});
+}
+
+function buildMainChart() {
+    const ctx=document.getElementById('mainChart').getContext('2d');
+    if(mainChart){mainChart.destroy();mainChart=null;}
+    const ac=accentBright();
+    let datasets=[], labels=[];
+
+    if(currentChartMode==='all') {
+        labels=db.history.map(h=>new Date(h.t).toLocaleTimeString());
+        datasets=[{label:'Баланс',data:db.history.map(h=>h.val),borderColor:ac,backgroundColor:'rgba(255,0,255,0.07)',tension:0.35,fill:true,pointRadius:0,borderWidth:2.5}];
+    } else if(currentChartMode==='fish') {
+        const pts=runningSum(db.fishEvents);
+        labels=pts.map(p=>new Date(p.t).toLocaleTimeString());
+        datasets=[{label:'Рыбалка',data:pts.map(p=>p.val),borderColor:'#ff80ff',backgroundColor:'rgba(255,128,255,0.07)',tension:0.35,fill:true,pointRadius:0,borderWidth:2.5}];
+    } else if(currentChartMode==='flip') {
+        const pts=runningSum(db.flipEvents);
+        labels=pts.map(p=>new Date(p.t).toLocaleTimeString());
+        datasets=[{label:'Перекуп',data:pts.map(p=>p.val),borderColor:'#00ffcc',backgroundColor:'rgba(0,255,204,0.07)',tension:0.35,fill:true,pointRadius:0,borderWidth:2.5}];
+    } else { // both
+        const fp=runningSum(db.fishEvents), pp=runningSum(db.flipEvents);
+        const allTs=[...new Set([...fp.map(p=>p.t),...pp.map(p=>p.t)])].sort((a,b)=>a-b);
+        labels=allTs.map(t=>new Date(t).toLocaleTimeString());
+        // interpolate values
+        function interpolate(pts,ts){let j=0,last=0;return ts.map(t=>{while(j<pts.length&&pts[j].t<=t){last=pts[j].val;j++;}return last;});}
+        datasets=[
+            {label:'🎣 Рыбалка',data:interpolate(fp,allTs),borderColor:'#ff80ff',backgroundColor:'rgba(255,128,255,0.05)',tension:0.35,fill:false,pointRadius:0,borderWidth:2},
+            {label:'💱 Перекуп',data:interpolate(pp,allTs),borderColor:'#00ffcc',backgroundColor:'rgba(0,255,204,0.05)',tension:0.35,fill:false,pointRadius:0,borderWidth:2}
+        ];
     }
 
-    sideChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels,
-            datasets: [{
-                data,
-                borderColor: '#ff00ff',
-                tension: 0.3,
-                fill: true,
-                backgroundColor: 'rgba(255,0,255,0.08)',
-                pointRadius: 0,
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: false,
-            scales: {
-                x: { display: false },
-                y: { 
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#666', font: { size: 9 }, maxTicksLimit: 4 }
-                }
-            },
-            plugins: { legend: { display: false } }
-        }
+    if(!labels.length){labels=['—'];datasets.forEach(d=>{if(!d.data.length)d.data=[0];});}
+
+    mainChart=new Chart(ctx,{
+        type:'line',data:{labels,datasets},
+        options:{responsive:true,maintainAspectRatio:false,animation:false,
+            interaction:{mode:'index',intersect:false},
+            scales:{x:{display:false},y:{grid:{color:'rgba(255,255,255,0.07)'},ticks:{color:'#666',font:{size:10}}}},
+            plugins:{legend:{display:datasets.length>1,labels:{color:'#aaa',font:{size:11},boxWidth:14}},
+                tooltip:{backgroundColor:'rgba(5,0,10,0.92)',titleColor:'#fff',bodyColor:'#aaa',borderColor:'rgba(255,255,255,0.1)',borderWidth:1}}}
     });
 }
 
-/* ---- Flip Calculator ---- */
-function flipNum(id) { return parseFloat(document.getElementById(id).value) || 0; }
+/* ── ИСТОРИЯ ── */
+function histFilter(f) {
+    currentHistFilter=f;
+    ['all','fish','flip'].forEach(k=>{
+        const b=document.getElementById('hf-'+k);
+        b.style.background = k===f ? 'var(--accent-bright)' : 'var(--accent-dark)';
+        b.style.color = k===f ? '#000' : '#fff';
+    });
+    renderHistory();
+}
 
+function renderHistory() {
+    let all=[
+        ...db.fishEvents.map(e=>({t:e.t,type:'fish',amount:e.v,label:'🎣 Рыбалка'})),
+        ...db.flipEvents.map(e=>({t:e.t,type:'flip',amount:e.v,label:'💱 Перекуп'}))
+    ].sort((a,b)=>b.t-a.t);
+    if(currentHistFilter!=='all') all=all.filter(d=>d.type===currentHistFilter);
+    const el=document.getElementById('history-list');
+    if(!all.length){el.innerHTML='<div class="history-empty">Записей нет</div>';return;}
+    el.innerHTML=all.slice(0,150).map(d=>{
+        const dt=new Date(d.t);
+        const ds=dt.toLocaleDateString('ru',{day:'2-digit',month:'2-digit'})+' '+dt.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+        const pos=d.amount>=0;
+        return `<div class="history-item">
+            <div>
+                <div class="hi-type">${d.label}</div>
+                <div style="font-weight:bold;color:${pos?'var(--green)':'var(--red)'}">${pos?'+':'-'}$${Math.abs(Math.floor(d.amount)).toLocaleString()}</div>
+            </div>
+            <div class="hi-time">${ds}</div>
+        </div>`;
+    }).join('');
+}
+
+/* ── ЭКСПОРТ ── */
+function buildReportText(period) {
+    const now=Date.now(), ms=period==='day'?86400000:period==='week'?604800000:Infinity;
+    const fish=db.fishEvents.filter(e=>now-e.t<ms).reduce((a,b)=>a+b.v,0);
+    const flip=db.flipEvents.filter(e=>now-e.t<ms).reduce((a,b)=>a+b.v,0);
+    const pName=period==='day'?'За сегодня':period==='week'?'За неделю':'Всё время';
+    return [`📊 Prince Manager — Отчёт`,`📅 ${pName} | ${new Date().toLocaleString('ru')}`,`━━━━━━━━━━━━━━━━━━━━`,`🎣 Рыбалка:   +$${Math.floor(fish).toLocaleString()}`,`💱 Перекуп:   +$${Math.floor(flip).toLocaleString()}`,`💀 Убытки:    -$${Math.floor(db.loss+(db.lossFlip||0)).toLocaleString()}`,`━━━━━━━━━━━━━━━━━━━━`,`💰 Доход:     $${Math.floor(fish+flip).toLocaleString()}`,`🌸 Баланс:    $${Math.floor(netVal()).toLocaleString()}`].join('\n');
+}
+
+function copyReport(period) {
+    const text=buildReportText(period);
+    navigator.clipboard.writeText(text).then(()=>{
+        const el=document.getElementById('export-preview');
+        el.style.display='block'; el.innerText=text+'\n\n✅ Скопировано!';
+    }).catch(()=>{const el=document.getElementById('export-preview');el.style.display='block';el.innerText=text;});
+}
+
+function exportCSV(source) {
+    let rows=[['Дата','Время','Тип','Сумма $']];
+    let events=[];
+    if(source==='fish'||source==='all') events.push(...db.fishEvents.map(e=>({...e,type:'Рыбалка'})));
+    if(source==='flip'||source==='all') events.push(...db.flipEvents.map(e=>({...e,type:'Перекуп'})));
+    events.sort((a,b)=>a.t-b.t);
+    events.forEach(e=>{const d=new Date(e.t);rows.push([d.toLocaleDateString('ru'),d.toLocaleTimeString('ru'),e.type,Math.floor(e.v)]);});
+    downloadFile('prince_'+source+'_'+Date.now()+'.csv','text/csv;charset=utf-8;',rows.map(r=>r.join(',')).join('\n'));
+}
+
+function exportJSON() { downloadFile('prince_backup_'+Date.now()+'.json','application/json',JSON.stringify(db,null,2)); }
+
+function importJSON(event) {
+    const file=event.target.files[0]; if(!file) return;
+    const reader=new FileReader();
+    reader.onload=e=>{
+        try {
+            const imp=JSON.parse(e.target.result);
+            if(imp.profitFish===undefined){alert('Неверный формат.');return;}
+            if(confirm('Заменить текущие данные?')){
+                db=imp; if(!db.lossFlip) db.lossFlip=0; if(!db.fishEvents) db.fishEvents=[]; if(!db.flipEvents) db.flipEvents=[];
+                if(mainChart){mainChart.destroy();mainChart=null;}
+                sync(); alert('✅ Данные загружены!');
+            }
+        } catch(err){alert('Ошибка: '+err.message);}
+    };
+    reader.readAsText(file); event.target.value='';
+}
+
+function downloadFile(name,type,content) {
+    const blob=new Blob([content],{type}), url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download=name; a.click(); URL.revokeObjectURL(url);
+}
+
+/* ── КАЛЬКУЛЯТОР ── */
+function flipNum(id){return parseFloat(document.getElementById(id).value)||0;}
 function calcFlip() {
-    const buy = flipNum('flip-buy');
-    const sell = flipNum('flip-sell');
-    const feePercent = flipNum('flip-fee');
-    const extra = flipNum('flip-extra');
-
-    const fee = sell * feePercent / 100;
-    const cost = buy + extra;
-    const profit = sell - fee - cost;
-    const roi = cost > 0 ? profit / cost * 100 : 0;
-    const margin = sell > 0 ? profit / sell * 100 : 0;
-    const breakEven = feePercent < 100 ? cost / (1 - feePercent / 100) : 0;
-
-    const profitEl = document.getElementById('flip-profit');
-    profitEl.innerText = (profit >= 0 ? '+' : '-') + money(profit);
-    profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
-
-    const roiEl = document.getElementById('flip-roi');
-    roiEl.innerText = roi.toFixed(1) + '%';
-    roiEl.style.color = roi >= 0 ? 'var(--pink-light)' : 'var(--red)';
-
-    const marginEl = document.getElementById('flip-margin');
-    marginEl.innerText = margin.toFixed(1) + '%';
-    marginEl.style.color = margin >= 0 ? 'var(--green)' : 'var(--red)';
-
-    document.getElementById('flip-break').innerText = '$' + Math.floor(breakEven || 0).toLocaleString();
+    const buy=flipNum('flip-buy'),sell=flipNum('flip-sell'),fee=flipNum('flip-fee'),extra=flipNum('flip-extra');
+    const feeAmt=sell*fee/100,cost=buy+extra,profit=sell-feeAmt-cost;
+    const roi=cost>0?profit/cost*100:0, margin=sell>0?profit/sell*100:0, be=fee<100?cost/(1-fee/100):0;
+    const pe=document.getElementById('flip-profit'); pe.innerText=(profit>=0?'+':'-')+money(profit); pe.style.color=profit>=0?'var(--green)':'var(--red)';
+    const re=document.getElementById('flip-roi'); re.innerText=roi.toFixed(1)+'%'; re.style.color=roi>=0?'var(--accent-light)':'var(--red)';
+    const me=document.getElementById('flip-margin'); me.innerText=margin.toFixed(1)+'%'; me.style.color=margin>=0?'var(--green)':'var(--red)';
+    document.getElementById('flip-break').innerText='$'+Math.floor(be||0).toLocaleString();
 }
-
 function saveFlipProfit() {
-    const buy = flipNum('flip-buy');
-    const sell = flipNum('flip-sell');
-    const feePercent = flipNum('flip-fee');
-    const extra = flipNum('flip-extra');
-
-    const fee = sell * feePercent / 100;
-    const profit = Math.floor(sell - fee - buy - extra);
-
-    if(profit === 0) { alert('Результат нулевой, ничего не записано.'); return; }
-
-    if(profit > 0) {
-        db.profitFlip += profit;
-        db.flipEvents.push({ t: Date.now(), v: profit });
-        alert('Прибыль перекупа записана: +$' + profit.toLocaleString());
-    } else {
-        if(!db.lossFlip) db.lossFlip = 0;
-        db.lossFlip += Math.abs(profit);
-        alert('Убыток перекупа записан: -$' + Math.abs(profit).toLocaleString());
-    }
-
-    db.history.push({ t: Date.now(), val: db.profitFish + db.profitFlip - db.loss - (db.lossFlip || 0) });
-
-    playBell();
-    sync();
+    const buy=flipNum('flip-buy'),sell=flipNum('flip-sell'),fee=flipNum('flip-fee'),extra=flipNum('flip-extra');
+    const profit=Math.floor(sell-sell*fee/100-buy-extra);
+    if(profit===0){alert('Результат нулевой.');return;}
+    if(profit>0){db.profitFlip+=profit;db.flipEvents.push({t:Date.now(),v:profit});alert('Прибыль перекупа: +$'+profit.toLocaleString());}
+    else{db.lossFlip=(db.lossFlip||0)+Math.abs(profit);alert('Убыток перекупа: -$'+Math.abs(profit).toLocaleString());}
+    db.history.push({t:Date.now(),val:netVal()}); playBell(); sync();
 }
-
 function resetFlipCalc() {
-    document.getElementById('flip-buy').value = '';
-    document.getElementById('flip-sell').value = '';
-    document.getElementById('flip-fee').value = '0';
-    document.getElementById('flip-extra').value = '0';
-    calcFlip();
+    ['flip-buy','flip-sell'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('flip-fee').value='0'; document.getElementById('flip-extra').value='0'; calcFlip();
 }
 
-document.addEventListener('keydown', function(e) {
-    if(e.key === 'Escape') {
-        const note = document.getElementById('note-overlay');
-        if(note && note.style.display === 'flex') note.style.display = 'none';
-    }
-});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){const n=document.getElementById('note-overlay');if(n&&n.style.display==='flex')n.style.display='none';}});
 
+initTheme();
 render();
-setInterval(tick, 1000);
+setInterval(tick,1000);
 </script>
 </body>
 </html>
