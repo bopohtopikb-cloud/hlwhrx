@@ -7,34 +7,67 @@
 <style>
 :root { 
     --bg: #030003; --sidebar: rgba(10, 0, 10, 0.9); --card: rgba(30, 0, 30, 0.7); 
-    --pink-bright: #ff00ff; --pink-light: #ff80ff; --red: #ff3366; --green: #00ffcc; --text: #fff; 
+    --pink-dark: #660066; --pink-bright: #ff00ff; --pink-light: #ff80ff; --red: #ff3366; --green: #00ffcc; --text: #fff; 
 }
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
 body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; position: relative; }
 
-/* Фон */
 .bg-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: radial-gradient(circle at 50% 50%, #1a001a 0%, #030003 100%); }
 .bg-orb { position: absolute; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(255, 0, 255, 0.1) 0%, transparent 70%); border-radius: 50%; filter: blur(80px); animation: float 25s infinite alternate ease-in-out; }
 @keyframes float { 0% { transform: translate(-20%, -20%); } 100% { transform: translate(120%, 120%); } }
 
 @keyframes textShine { 0% { background-position: 0% 50%; } 100% { background-position: 200% center; } }
-.logo { font-size: 24px; font-weight: 900; background: linear-gradient(90deg, var(--pink-light), var(--pink-bright), #fff, var(--pink-bright), var(--pink-light)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; margin-bottom: 25px; text-align: center; text-transform: uppercase; }
+.logo { font-size: 22px; font-weight: 900; background: linear-gradient(90deg, var(--pink-light), var(--pink-bright), #fff, var(--pink-bright), var(--pink-light)); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; margin-bottom: 18px; text-align: center; text-transform: uppercase; }
 
-.sidebar { width: 260px; background: var(--sidebar); backdrop-filter: blur(25px); border-right: 1px solid rgba(255, 0, 255, 0.3); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
-.main { flex: 1; display: flex; flex-direction: column; z-index: 5; position: relative; }
-.stat-item { margin-bottom: 10px; padding: 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 0, 255, 0.1); }
-.stat-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 4px; }
-.stat-value { font-size: 18px; font-weight: bold; font-family: 'Consolas', monospace; }
+/* SIDEBAR — stats + mini chart */
+.sidebar { 
+    width: 270px; 
+    background: var(--sidebar); 
+    backdrop-filter: blur(25px); 
+    border-right: 1px solid rgba(255, 0, 255, 0.3); 
+    padding: 20px 15px; 
+    display: flex; 
+    flex-direction: column; 
+    z-index: 10;
+    overflow-y: auto;
+}
 
-.tabs-nav { display: flex; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); }
-.tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 11px; text-transform: uppercase; }
+.main { flex: 1; display: flex; flex-direction: column; z-index: 5; position: relative; overflow: hidden; }
+
+.stat-item { margin-bottom: 8px; padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border-radius: 12px; border: 1px solid rgba(255, 0, 255, 0.1); }
+.stat-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 3px; }
+.stat-value { font-size: 17px; font-weight: bold; font-family: 'Consolas', monospace; }
+
+/* Mini chart in sidebar */
+.sidebar-chart-wrap {
+    margin-top: 12px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 14px;
+    border: 1px solid rgba(255,0,255,0.12);
+    padding: 12px;
+    flex-shrink: 0;
+}
+.sidebar-chart-title {
+    font-size: 10px;
+    color: #aaa;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+.sidebar-chart-wrap canvas { width: 100% !important; height: 120px !important; }
+
+.tabs-nav { display: flex; gap: 8px; padding: 12px 16px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; }
+.tab-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 9px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
 .tab-btn.active { background: var(--pink-bright); color: #fff; box-shadow: 0 0 15px var(--pink-bright); border: none; }
+/* Calculator tab special style */
+.tab-btn.calc-tab { background: rgba(255,0,255,0.12); border-color: rgba(255,0,255,0.3); color: var(--pink-light); }
+.tab-btn.calc-tab.active { background: var(--pink-bright); color: #000; }
 
-.content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+.content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 110px; }
 .view { display: none; }
 .view.active { display: block; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; }
 .card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; overflow: hidden; transition: 0.3s; }
 .card-header { padding: 12px; background: rgba(255,255,255,0.03); display: flex; justify-content: space-between; }
 .dur-val { font-size: 32px; font-weight: 900; text-align: center; padding: 20px 0; color: var(--pink-light); }
@@ -46,44 +79,125 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
 .nav-btn { background: var(--pink-dark); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; height: 40px; padding: 0 15px; font-size: 11px; }
 .nav-btn:hover { background: var(--pink-bright); }
 
-.bottom-control { position: absolute; bottom: 0; width: 100%; background: rgba(10,0,10,0.95); backdrop-filter: blur(20px); padding: 15px 25px; display: flex; gap: 12px; border-top: 1px solid var(--pink-bright); z-index: 100; }
+/* Bottom control — two rows clearly labeled */
+.bottom-control { 
+    position: absolute; bottom: 0; width: 100%; 
+    background: rgba(10,0,10,0.95); backdrop-filter: blur(20px); 
+    padding: 10px 18px 12px; 
+    border-top: 1px solid var(--pink-bright); 
+    z-index: 100; 
+}
+.bottom-row { display: flex; gap: 10px; align-items: center; margin-bottom: 7px; }
+.bottom-row:last-child { margin-bottom: 0; }
+.bottom-section-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; min-width: 60px; }
+
+/* Finance view — two columns fishing / flip */
+.finance-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.finance-section-title { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: var(--pink-light); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,0,255,0.2); }
+.finance-section-title.flip-title { color: var(--green); }
 
 #note-overlay { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 450px; height: 550px; background: rgba(15, 0, 15, 0.98); backdrop-filter: blur(30px); border: 2px solid var(--pink-bright); border-radius: 20px; z-index: 1000; padding: 20px; flex-direction: column; }
 #ds_link { background: linear-gradient(90deg, #fff, var(--pink-light), #fff); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textShine 3s linear infinite; text-decoration: none; font-weight: bold; font-size: 13px; }
+
+/* CALCULATOR VIEW (inline tab) */
+.calc-wrap {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.flip-calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+.flip-calc-input {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 11px;
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    width: 100%;
+}
+.flip-calc-input:focus { border-color: var(--pink-bright); }
+.flip-calc-result {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.flip-calc-card {
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 0, 255, 0.12);
+}
+.flip-calc-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 5px; }
+.flip-calc-value { font-size: 20px; font-weight: bold; font-family: Consolas, monospace; }
+.flip-calc-actions { display: flex; gap: 10px; }
+.flip-calc-actions button { flex: 1; }
+.flip-calc-mini { margin-top: 12px; color: #888; font-size: 11px; line-height: 1.4; }
 </style>
 </head>
 <body onclick="initAudio()">
 
-<div class="bg-wrapper"><div class="bg-orb" style="top: -10%; left: -10%;"></div><div class="bg-orb" style="bottom: -10%; right: -10%; animation-delay: -7s;"></div></div>
+<div class="bg-wrapper">
+    <div class="bg-orb" style="top: -10%; left: -10%;"></div>
+    <div class="bg-orb" style="bottom: -10%; right: -10%; animation-delay: -7s;"></div>
+</div>
 
 <div id="note-overlay">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><span style="font-weight:bold; color:var(--pink-bright)">БЛОКНОТ ПРИНЦА</span><button onclick="toggleNotes()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:20px;">✕</button></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <span style="font-weight:bold; color:var(--pink-bright)">БЛОКНОТ ПРИНЦА</span>
+        <button onclick="toggleNotes()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:20px;">✕</button>
+    </div>
     <textarea id="notes" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid rgba(255,0,255,0.2); color:#ffccff; padding:15px; border-radius:10px; resize:none; outline:none;" oninput="saveNotes()"></textarea>
 </div>
 
+<!-- SIDEBAR -->
 <div class="sidebar">
     <div class="logo">Prince Manager</div>
-    <div class="stat-item"><div class="stat-label">🌸 Баланс</div><div id="s-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+
+    <div class="stat-item"><div class="stat-label">🌸 Баланс (общий)</div><div id="s-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — доход</div><div id="s-fish-total" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">🎣 Рыбалка — убыток (износ)</div><div id="s-fish-loss" class="stat-value" style="color:var(--red)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">💱 Перекуп — доход</div><div id="s-flip-total" class="stat-value" style="color:var(--green)">$0</div></div>
+    <div class="stat-item"><div class="stat-label">💱 Перекуп — убыток</div><div id="s-flip-loss" class="stat-value" style="color:var(--red)">$0</div></div>
     <div class="stat-item"><div class="stat-label">📈 Прибыль / Час</div><div id="s-sph" class="stat-value" style="color:var(--green)">$0</div></div>
-    
-    <button class="nav-btn" style="margin-top:10px; width:100%" onclick="toggleNotes()">📋 ОТКРЫТЬ БЛОКНОТ</button>
-    <button class="nav-btn" style="margin-top:10px; width:100%; background: #441144;" onclick="clearStats()">🗑️ ОЧИСТИТЬ СТАТУ</button>
-    
-    <div style="margin-top:auto; padding:15px; text-align:center; background:rgba(255,255,255,0.03); border-radius:15px;"><a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a></div>
+
+    <!-- Mini chart -->
+    <div class="sidebar-chart-wrap">
+        <div class="sidebar-chart-title">📊 График баланса</div>
+        <canvas id="sideChart"></canvas>
+    </div>
+
+    <div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">
+        <button class="nav-btn" style="width:100%" onclick="toggleNotes()">📋 БЛОКНОТ</button>
+        <button class="nav-btn" style="width:100%; background: #441144;" onclick="clearStats()">🗑️ ОЧИСТИТЬ СТАТУ</button>
+    </div>
+
+    <div style="margin-top:auto; padding-top:15px; padding:15px; text-align:center; background:rgba(255,255,255,0.03); border-radius:15px; margin-top:15px;">
+        <a id="ds_link" href="https://discord.com/users/787277846715957258" target="_blank">Discord: @hlwhrx</a>
+    </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
     <div class="tabs-nav">
         <button id="b-items" class="tab-btn active" onclick="tab('items')">🎒 Снаряжение</button>
         <button id="b-timers" class="tab-btn" onclick="tab('timers')">⏲️ Таймеры</button>
         <button id="b-finance" class="tab-btn" onclick="tab('finance')">💎 Финансы</button>
-        <button id="b-chart" class="tab-btn" onclick="tab('chart')">📊 Анализ</button>
+        <button id="b-calc" class="tab-btn calc-tab" onclick="tab('calc')">💱 Калькулятор</button>
         <button id="b-archive" class="tab-btn" onclick="tab('archive')">⚰️ Кладбище</button>
     </div>
 
     <div class="content">
-        <div id="view-items" class="view active"><div id="grid" class="grid"></div></div>
+        <!-- СНАРЯЖЕНИЕ -->
+        <div id="view-items" class="view active">
+            <div id="grid" class="grid"></div>
+        </div>
         
+        <!-- ТАЙМЕРЫ -->
         <div id="view-timers" class="view">
             <div style="max-width:500px; background:rgba(255,255,255,0.03); padding:20px; border-radius:20px; border:1px solid rgba(255,0,255,0.1);">
                 <h3 style="color:var(--pink-light); margin-bottom:15px;">Создать таймер</h3>
@@ -99,38 +213,151 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
             <div id="list-timers" class="grid" style="margin-top:20px;"></div>
         </div>
 
+        <!-- ФИНАНСЫ — разделены по источникам -->
         <div id="view-finance" class="view">
-            <div class="grid">
-                <div class="stat-item"><div class="stat-label">Чистая прибыль</div><div id="f-net" class="stat-value" style="font-size:24px; color:var(--pink-light)">$0</div></div>
-                <div class="stat-item"><div class="stat-label">За Час (Среднее)</div><div id="f-hour" class="stat-value" style="color:var(--green)">$0</div></div>
-                <div class="stat-item"><div class="stat-label">За День (24ч)</div><div id="f-day" class="stat-value" style="color:var(--green)">$0</div></div>
-                <div class="stat-item"><div class="stat-label">За Неделю (7д)</div><div id="f-week" class="stat-value" style="color:var(--green)">$0</div></div>
-                <div class="stat-item"><div class="stat-label">Всего потеряно</div><div id="f-total-loss" class="stat-value" style="color:var(--red)">$0</div></div>
+            <div class="finance-cols">
+                <!-- Рыбалка -->
+                <div>
+                    <div class="finance-section-title">🎣 Рыбалка</div>
+                    <div class="grid" style="grid-template-columns:1fr;">
+                        <div class="stat-item"><div class="stat-label">Всего с рыбалки</div><div id="ff-total" class="stat-value" style="color:var(--pink-light)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За Час</div><div id="ff-hour" class="stat-value" style="color:var(--green)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За День (24ч)</div><div id="ff-day" class="stat-value" style="color:var(--green)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За Неделю (7д)</div><div id="ff-week" class="stat-value" style="color:var(--green)">$0</div></div>
+                    </div>
+                </div>
+                <!-- Перекуп -->
+                <div>
+                    <div class="finance-section-title flip-title">💱 Перекуп (флип)</div>
+                    <div class="grid" style="grid-template-columns:1fr;">
+                        <div class="stat-item"><div class="stat-label">Всего с перекупа</div><div id="fp-total" class="stat-value" style="color:var(--green)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За Час</div><div id="fp-hour" class="stat-value" style="color:var(--green)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За День (24ч)</div><div id="fp-day" class="stat-value" style="color:var(--green)">$0</div></div>
+                        <div class="stat-item"><div class="stat-label">За Неделю (7д)</div><div id="fp-week" class="stat-value" style="color:var(--green)">$0</div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Общее -->
+            <div style="margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div class="stat-item"><div class="stat-label">💀 Всего потеряно (износ)</div><div id="f-total-loss" class="stat-value" style="color:var(--red)">$0</div></div>
+                <div class="stat-item"><div class="stat-label">🌸 Чистый баланс</div><div id="f-net" class="stat-value" style="color:var(--pink-light)">$0</div></div>
             </div>
         </div>
 
-        <div id="view-chart" class="view"><div style="height:400px; background:rgba(0,0,0,0.2); padding:20px; border-radius:20px;"><canvas id="mainChart"></canvas></div></div>
-        <div id="view-archive" class="view"><div id="archive-list"></div></div>
+        <!-- КАЛЬКУЛЯТОР (вкладка) -->
+        <div id="view-calc" class="view">
+            <div class="calc-wrap">
+                <h3 style="color:var(--pink-light); margin-bottom:18px; text-transform:uppercase; letter-spacing:2px;">💱 Калькулятор перекупа</h3>
+                <div class="flip-calc-grid">
+                    <input id="flip-buy" class="flip-calc-input" type="number" placeholder="Цена покупки $" oninput="calcFlip()">
+                    <input id="flip-sell" class="flip-calc-input" type="number" placeholder="Цена продажи $" oninput="calcFlip()">
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Комиссия площадки %</label>
+                        <input id="flip-fee" class="flip-calc-input" type="number" placeholder="Например: 5" value="0" oninput="calcFlip()">
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <label style="font-size:10px; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Доп. расходы $ (налог, доставка)</label>
+                        <input id="flip-extra" class="flip-calc-input" type="number" placeholder="Например: 500" value="0" oninput="calcFlip()">
+                    </div>
+                </div>
+                <div class="flip-calc-result">
+                    <div class="flip-calc-card">
+                        <div class="flip-calc-label">Чистая прибыль</div>
+                        <div id="flip-profit" class="flip-calc-value" style="color:var(--green)">+$0</div>
+                    </div>
+                    <div class="flip-calc-card">
+                        <div class="flip-calc-label">ROI</div>
+                        <div id="flip-roi" class="flip-calc-value" style="color:var(--pink-light)">0%</div>
+                    </div>
+                    <div class="flip-calc-card">
+                        <div class="flip-calc-label">Маржа</div>
+                        <div id="flip-margin" class="flip-calc-value" style="color:var(--green)">0%</div>
+                    </div>
+                    <div class="flip-calc-card">
+                        <div class="flip-calc-label">Безубыток</div>
+                        <div id="flip-break" class="flip-calc-value">$0</div>
+                    </div>
+                </div>
+                <div class="flip-calc-actions">
+                    <button class="nav-btn" onclick="saveFlipProfit()" style="background:var(--pink-bright); color:#000; height:44px;">ЗАПИСАТЬ В ПЕРЕКУП</button>
+                    <button class="nav-btn" onclick="resetFlipCalc()" style="background:#441144; height:44px;">СБРОС</button>
+                </div>
+                <div class="flip-calc-mini" style="margin-top:14px;">
+                    Формула: продажа − комиссия − покупка − доп. расходы. Прибыль записывается в раздел «Перекуп».
+                </div>
+            </div>
+        </div>
+
+        <!-- КЛАДБИЩЕ -->
+        <div id="view-archive" class="view">
+            <div id="archive-list"></div>
+        </div>
     </div>
 
+    <!-- BOTTOM CONTROL — two labeled rows -->
     <div class="bottom-control">
-        <input id="in-n" class="nav-input" placeholder="Предмет..." style="flex:3">
-        <input id="in-p" class="nav-input" type="number" placeholder="Цена $" style="flex:1">
-        <button class="nav-btn" onclick="addItem()" style="flex:1; background:var(--pink-light); color:#000">+ ПРЕДМЕТ</button>
-        <div style="width:2px; background:rgba(255,255,255,0.1); margin:0 5px;"></div>
-        <input id="in-cash" class="nav-input" type="number" placeholder="Доход..." style="flex:1.5">
-        <button class="nav-btn" onclick="addProfit()" style="flex:1; background:var(--pink-bright); color:#000">ЗАПИСАТЬ</button>
+        <!-- Row 1: предмет -->
+        <div class="bottom-row">
+            <span class="bottom-section-label">🎒 Предмет</span>
+            <input id="in-n" class="nav-input" placeholder="Название предмета..." style="flex:3">
+            <input id="in-p" class="nav-input" type="number" placeholder="Цена $" style="flex:1">
+            <button class="nav-btn" onclick="addItem()" style="flex:1; background:var(--pink-light); color:#000;">+ ДОБАВИТЬ</button>
+        </div>
+        <!-- Row 2: доход рыбалки -->
+        <div class="bottom-row">
+            <span class="bottom-section-label">🎣 Рыбалка</span>
+            <input id="in-fish" class="nav-input" type="number" placeholder="Доход с рыбалки $" style="flex:2">
+            <button class="nav-btn" onclick="addFishProfit()" style="flex:1; background:var(--pink-bright); color:#000;">ЗАПИСАТЬ</button>
+        </div>
     </div>
 </div>
 
 <script>
 let audioCtx = null;
-let myChart = null;
-let db = JSON.parse(localStorage.getItem('PRINCE_ULTRA_V13')) || {
-    items: [], profit: 0, loss: 0, notes: "", archive: [], timers: [], 
-    history: [{t: Date.now(), val: 0}], 
-    profitEvents: [] // Для расчета за день/неделю
-};
+let sideChart = null;
+
+let db = JSON.parse(localStorage.getItem('PRINCE_ULTRA_V14')) || null;
+
+// Migration from old key
+if(!db) {
+    const old = localStorage.getItem('PRINCE_ULTRA_V13');
+    if(old) {
+        try {
+            const o = JSON.parse(old);
+            db = {
+                items: o.items || [],
+                profitFish: o.profit || 0,
+                profitFlip: 0,
+                loss: o.loss || 0,
+                notes: o.notes || "",
+                archive: o.archive || [],
+                timers: o.timers || [],
+                history: o.history || [{t: Date.now(), val: 0}],
+                fishEvents: o.profitEvents || [],
+                flipEvents: []
+            };
+        } catch(e) {}
+    }
+}
+
+if(!db) {
+    db = {
+        items: [], profitFish: 0, profitFlip: 0, loss: 0, notes: "", archive: [],
+        timers: [], history: [{t: Date.now(), val: 0}],
+        fishEvents: [], flipEvents: []
+    };
+}
+
+// Ensure all fields exist
+if(!db.items) db.items = [];
+if(!db.archive) db.archive = [];
+if(!db.timers) db.timers = [];
+if(!db.history) db.history = [{t: Date.now(), val: 0}];
+if(!db.fishEvents) db.fishEvents = [];
+if(!db.flipEvents) db.flipEvents = [];
+if(typeof db.notes !== 'string') db.notes = "";
+if(!db.profitFish) db.profitFish = 0;
+if(!db.profitFlip) db.profitFlip = 0;
 
 function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
@@ -146,36 +373,68 @@ function playBell() {
     }, d * 1000));
 }
 
-function sync() { localStorage.setItem('PRINCE_ULTRA_V13', JSON.stringify(db)); render(); }
+function sync() { localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db)); render(); }
 
 function clearStats() {
     if(confirm("Внимание! Это удалит ВСЕ предметы, историю и прибыль. Продолжить?")) {
-        db = { items: [], profit: 0, loss: 0, notes: db.notes, archive: [], timers: [], history: [{t: Date.now(), val: 0}], profitEvents: [] };
+        db = { 
+            items: [], profitFish: 0, profitFlip: 0, loss: 0, lossFlip: 0, notes: db.notes, 
+            archive: [], timers: [], history: [{t: Date.now(), val: 0}],
+            fishEvents: [], flipEvents: []
+        };
         sync();
     }
 }
 
+function safeHtml(v) {
+    return String(v ?? '').replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[s]));
+}
+
+function money(v) { return '$' + Math.floor(Math.abs(v || 0)).toLocaleString(); }
+
+function filterEvents(arr, ms) {
+    const now = Date.now();
+    return arr.filter(e => now - e.t < ms).reduce((a,b) => a + b.v, 0);
+}
+
 function render() {
-    const net = db.profit - db.loss;
-    document.getElementById('s-net').innerText = '$' + net.toLocaleString();
-    document.getElementById('f-net').innerText = '$' + net.toLocaleString();
-    document.getElementById('f-total-loss').innerText = '$' + Math.floor(db.loss).toLocaleString();
+    const lossFlip = db.lossFlip || 0;
+    const net = db.profitFish + db.profitFlip - db.loss - lossFlip;
+
+    // Sidebar stats
+    document.getElementById('s-net').innerText = '$' + Math.floor(net).toLocaleString();
+    document.getElementById('s-fish-total').innerText = '$' + Math.floor(db.profitFish).toLocaleString();
+    document.getElementById('s-fish-loss').innerText = '-$' + Math.floor(db.loss).toLocaleString();
+    document.getElementById('s-flip-total').innerText = '$' + Math.floor(db.profitFlip).toLocaleString();
+    document.getElementById('s-flip-loss').innerText = '-$' + Math.floor(lossFlip).toLocaleString();
+
+    const fishHour = filterEvents(db.fishEvents, 3600000);
+    const flipHour = filterEvents(db.flipEvents, 3600000);
+    document.getElementById('s-sph').innerText = '$' + Math.floor(fishHour + flipHour).toLocaleString();
+
+    // Finance — fishing
+    document.getElementById('ff-total').innerText = '$' + Math.floor(db.profitFish).toLocaleString();
+    document.getElementById('ff-hour').innerText = '$' + Math.floor(fishHour).toLocaleString();
+    document.getElementById('ff-day').innerText = '$' + Math.floor(filterEvents(db.fishEvents, 86400000)).toLocaleString();
+    document.getElementById('ff-week').innerText = '$' + Math.floor(filterEvents(db.fishEvents, 604800000)).toLocaleString();
+
+    // Finance — flip
+    document.getElementById('fp-total').innerText = '$' + Math.floor(db.profitFlip).toLocaleString();
+    document.getElementById('fp-hour').innerText = '$' + Math.floor(flipHour).toLocaleString();
+    document.getElementById('fp-day').innerText = '$' + Math.floor(filterEvents(db.flipEvents, 86400000)).toLocaleString();
+    document.getElementById('fp-week').innerText = '$' + Math.floor(filterEvents(db.flipEvents, 604800000)).toLocaleString();
+
+    // Finance — общее
+    document.getElementById('f-net').innerText = '$' + Math.floor(net).toLocaleString();
+    document.getElementById('f-total-loss').innerText = '-$' + Math.floor(db.loss + lossFlip).toLocaleString();
+
+    // Notes
     document.getElementById('notes').value = db.notes;
 
-    // Расчет периодов
-    const now = Date.now();
-    const lastHour = db.profitEvents.filter(e => now - e.t < 3600000).reduce((a,b)=>a+b.v, 0);
-    const lastDay = db.profitEvents.filter(e => now - e.t < 86400000).reduce((a,b)=>a+b.v, 0);
-    const lastWeek = db.profitEvents.filter(e => now - e.t < 604800000).reduce((a,b)=>a+b.v, 0);
-
-    document.getElementById('s-sph').innerText = '$' + lastHour.toLocaleString();
-    document.getElementById('f-hour').innerText = '$' + lastHour.toLocaleString();
-    document.getElementById('f-day').innerText = '$' + lastDay.toLocaleString();
-    document.getElementById('f-week').innerText = '$' + lastWeek.toLocaleString();
-
+    // Items grid
     document.getElementById('grid').innerHTML = db.items.map((it, i) => `
         <div class="card">
-            <div class="card-header"><b>${it.name}</b><span style="color:var(--pink-light)">$${it.price}</span></div>
+            <div class="card-header"><b>${safeHtml(it.name)}</b><span style="color:var(--pink-light)">$${Math.floor(it.price).toLocaleString()}</span></div>
             <div class="dur-val">${it.dur}%</div>
             <div class="card-footer">
                 <button class="f-btn" onclick="dmg(${i})" style="color:var(--pink-bright); border-right:1px solid rgba(255,255,255,0.1)">-1% ИЗНОС</button>
@@ -183,30 +442,67 @@ function render() {
             </div>
         </div>`).join('');
     
-    document.getElementById('archive-list').innerHTML = db.archive.map(it => `<div class="stat-item" style="display:flex; justify-content:space-between"><span>${it.name}</span><span style="color:var(--red)">-$${it.lossAt}</span></div>`).join('');
-    if(myChart) updateChart();
+    // Archive
+    document.getElementById('archive-list').innerHTML = db.archive.length === 0 
+        ? '<div style="color:#555; text-align:center; padding:40px;">Кладбище пусто</div>'
+        : db.archive.map(it => `<div class="stat-item" style="display:flex; justify-content:space-between"><span>${safeHtml(it.name)}</span><span style="color:var(--red)">-$${Math.floor(it.lossAt).toLocaleString()}</span></div>`).join('');
+
+    updateSideChart();
 }
 
 function addItem() {
-    const n = document.getElementById('in-n').value, p = parseInt(document.getElementById('in-p').value) || 0;
-    if(n) { db.items.push({name: n, price: p, dur: 100}); document.getElementById('in-n').value=''; document.getElementById('in-p').value=''; sync(); }
-}
-function addProfit() {
-    const v = parseInt(document.getElementById('in-cash').value) || 0;
-    if(v > 0) { 
-        db.profit += v; 
-        db.profitEvents.push({t: Date.now(), v: v});
-        db.history.push({t: Date.now(), val: db.profit - db.loss});
-        playBell(); document.getElementById('in-cash').value=''; sync(); 
+    const n = document.getElementById('in-n').value;
+    const p = parseInt(document.getElementById('in-p').value) || 0;
+    if(n) {
+        db.items.push({name: n, price: p, dur: 100});
+        document.getElementById('in-n').value='';
+        document.getElementById('in-p').value='';
+        sync();
     }
 }
-function dmg(i) { if(db.items[i].dur > 0) { db.loss += db.items[i].price * 0.01; db.items[i].dur -= 1; sync(); } }
-function toArchive(i) { if(confirm("В архив?")) { let it = db.items[i]; it.lossAt = Math.floor(it.price * (100 - it.dur) / 100); db.archive.push(it); db.items.splice(i,1); sync(); } }
+
+function addFishProfit() {
+    const v = parseInt(document.getElementById('in-fish').value) || 0;
+    if(v > 0) { 
+        db.profitFish += v; 
+        db.fishEvents.push({t: Date.now(), v: v});
+        db.history.push({t: Date.now(), val: db.profitFish + db.profitFlip - db.loss});
+        playBell();
+        document.getElementById('in-fish').value='';
+        sync(); 
+    }
+}
+
+function dmg(i) {
+    if(db.items[i].dur > 0) {
+        db.loss += db.items[i].price * 0.01;
+        db.items[i].dur -= 1;
+        sync();
+    }
+}
+
+function toArchive(i) {
+    if(confirm("В архив?")) {
+        let it = db.items[i];
+        it.lossAt = Math.floor(it.price * (100 - it.dur) / 100);
+        db.archive.push(it);
+        db.items.splice(i,1);
+        sync();
+    }
+}
 
 function addT() {
-    const name = document.getElementById('t-name').value || "Таймер", h = parseInt(document.getElementById('t-h').value) || 0, m = parseInt(document.getElementById('t-m').value) || 0;
+    const name = document.getElementById('t-name').value || "Таймер";
+    const h = parseInt(document.getElementById('t-h').value) || 0;
+    const m = parseInt(document.getElementById('t-m').value) || 0;
     const totalMs = (h * 3600000) + (m * 60000);
-    if(totalMs > 0) { db.timers.push({ name: name, end: Date.now() + totalMs, done: false }); sync(); }
+    if(totalMs > 0) {
+        db.timers.push({ name: name, end: Date.now() + totalMs, done: false });
+        document.getElementById('t-name').value = '';
+        document.getElementById('t-h').value = '';
+        document.getElementById('t-m').value = '';
+        sync();
+    }
 }
 
 function tick() {
@@ -214,26 +510,143 @@ function tick() {
     list.innerHTML = "";
     db.timers.forEach((t, i) => {
         let rem = Math.max(0, Math.floor((t.end - Date.now()) / 1000));
-        if(rem <= 0 && !t.done) { t.done = true; playBell(); }
+        if(rem <= 0 && !t.done) { t.done = true; playBell(); localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db)); }
         let h = Math.floor(rem / 3600), m = Math.floor((rem % 3600) / 60), s = rem % 60;
-        list.innerHTML += `<div class="card" style="padding:15px; border-color:${rem<=0?'var(--pink-bright)':'rgba(255,255,255,0.1)'}"><div style="font-size:10px; color:#aaa;">${t.name}</div><div style="font-size:24px; font-weight:bold; color:${rem<=0?'var(--pink-bright)':'#fff'}">${rem <= 0 ? 'ГОТОВО!' : (h>0?h+':':'')+m+':'+(s<10?'0':'')+s}</div><button onclick="db.timers.splice(${i},1); sync()" style="margin-top:10px; background:none; border:1px solid rgba(255,255,255,0.1); color:#666; padding:5px; border-radius:5px; cursor:pointer; width:100%;">УДАЛИТЬ</button></div>`;
+        list.innerHTML += `<div class="card" style="padding:15px; border-color:${rem<=0?'var(--pink-bright)':'rgba(255,255,255,0.1)'}"><div style="font-size:10px; color:#aaa;">${safeHtml(t.name)}</div><div style="font-size:24px; font-weight:bold; color:${rem<=0?'var(--pink-bright)':'#fff'}">${rem <= 0 ? 'ГОТОВО!' : (h>0?h+':':'')+m+':'+(s<10?'0':'')+s}</div><button onclick="db.timers.splice(${i},1); sync()" style="margin-top:10px; background:none; border:1px solid rgba(255,255,255,0.1); color:#666; padding:5px; border-radius:5px; cursor:pointer; width:100%;">УДАЛИТЬ</button></div>`;
     });
 }
 
-function toggleNotes() { const n = document.getElementById('note-overlay'); n.style.display = (n.style.display === 'flex') ? 'none' : 'flex'; }
-function saveNotes() { db.notes = document.getElementById('notes').value; localStorage.setItem('PRINCE_ULTRA_V13', JSON.stringify(db)); }
-function tab(name) { document.querySelectorAll('.view, .tab-btn').forEach(x => x.classList.remove('active')); document.getElementById('view-'+name).classList.add('active'); document.getElementById('b-'+name).classList.add('active'); if(name === 'chart') initChart(); }
+function toggleNotes() {
+    const n = document.getElementById('note-overlay');
+    n.style.display = (n.style.display === 'flex') ? 'none' : 'flex';
+}
 
-function initChart() {
-    const ctx = document.getElementById('mainChart').getContext('2d');
-    if(myChart) myChart.destroy();
-    myChart = new Chart(ctx, { 
-        type: 'line', 
-        data: { labels: db.history.map(h => new Date(h.t).toLocaleTimeString()), datasets: [{ data: db.history.map(h => h.val), borderColor: '#ff00ff', tension: 0.3, fill: true, backgroundColor: 'rgba(255,0,255,0.1)' }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { display: false }, y: { grid: { color: '#222' } } }, plugins: { legend: { display: false } } } 
+function saveNotes() {
+    db.notes = document.getElementById('notes').value;
+    localStorage.setItem('PRINCE_ULTRA_V14', JSON.stringify(db));
+}
+
+function tab(name) {
+    document.querySelectorAll('.view, .tab-btn').forEach(x => x.classList.remove('active'));
+    document.getElementById('view-'+name).classList.add('active');
+    document.getElementById('b-'+name).classList.add('active');
+}
+
+/* ---- Side Chart ---- */
+function updateSideChart() {
+    const ctx = document.getElementById('sideChart').getContext('2d');
+    const labels = db.history.map(h => new Date(h.t).toLocaleTimeString());
+    const data = db.history.map(h => h.val);
+
+    if(sideChart) {
+        sideChart.data.labels = labels;
+        sideChart.data.datasets[0].data = data;
+        sideChart.update('none');
+        return;
+    }
+
+    sideChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                data,
+                borderColor: '#ff00ff',
+                tension: 0.3,
+                fill: true,
+                backgroundColor: 'rgba(255,0,255,0.08)',
+                pointRadius: 0,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            scales: {
+                x: { display: false },
+                y: { 
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#666', font: { size: 9 }, maxTicksLimit: 4 }
+                }
+            },
+            plugins: { legend: { display: false } }
+        }
     });
 }
-function updateChart() { if(myChart) { myChart.data.labels = db.history.map(h => new Date(h.t).toLocaleTimeString()); myChart.data.datasets[0].data = db.history.map(h => h.val); myChart.update(); } }
+
+/* ---- Flip Calculator ---- */
+function flipNum(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+function calcFlip() {
+    const buy = flipNum('flip-buy');
+    const sell = flipNum('flip-sell');
+    const feePercent = flipNum('flip-fee');
+    const extra = flipNum('flip-extra');
+
+    const fee = sell * feePercent / 100;
+    const cost = buy + extra;
+    const profit = sell - fee - cost;
+    const roi = cost > 0 ? profit / cost * 100 : 0;
+    const margin = sell > 0 ? profit / sell * 100 : 0;
+    const breakEven = feePercent < 100 ? cost / (1 - feePercent / 100) : 0;
+
+    const profitEl = document.getElementById('flip-profit');
+    profitEl.innerText = (profit >= 0 ? '+' : '-') + money(profit);
+    profitEl.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+
+    const roiEl = document.getElementById('flip-roi');
+    roiEl.innerText = roi.toFixed(1) + '%';
+    roiEl.style.color = roi >= 0 ? 'var(--pink-light)' : 'var(--red)';
+
+    const marginEl = document.getElementById('flip-margin');
+    marginEl.innerText = margin.toFixed(1) + '%';
+    marginEl.style.color = margin >= 0 ? 'var(--green)' : 'var(--red)';
+
+    document.getElementById('flip-break').innerText = '$' + Math.floor(breakEven || 0).toLocaleString();
+}
+
+function saveFlipProfit() {
+    const buy = flipNum('flip-buy');
+    const sell = flipNum('flip-sell');
+    const feePercent = flipNum('flip-fee');
+    const extra = flipNum('flip-extra');
+
+    const fee = sell * feePercent / 100;
+    const profit = Math.floor(sell - fee - buy - extra);
+
+    if(profit === 0) { alert('Результат нулевой, ничего не записано.'); return; }
+
+    if(profit > 0) {
+        db.profitFlip += profit;
+        db.flipEvents.push({ t: Date.now(), v: profit });
+        alert('Прибыль перекупа записана: +$' + profit.toLocaleString());
+    } else {
+        if(!db.lossFlip) db.lossFlip = 0;
+        db.lossFlip += Math.abs(profit);
+        alert('Убыток перекупа записан: -$' + Math.abs(profit).toLocaleString());
+    }
+
+    db.history.push({ t: Date.now(), val: db.profitFish + db.profitFlip - db.loss - (db.lossFlip || 0) });
+
+    playBell();
+    sync();
+}
+
+function resetFlipCalc() {
+    document.getElementById('flip-buy').value = '';
+    document.getElementById('flip-sell').value = '';
+    document.getElementById('flip-fee').value = '0';
+    document.getElementById('flip-extra').value = '0';
+    calcFlip();
+}
+
+document.addEventListener('keydown', function(e) {
+    if(e.key === 'Escape') {
+        const note = document.getElementById('note-overlay');
+        if(note && note.style.display === 'flex') note.style.display = 'none';
+    }
+});
 
 render();
 setInterval(tick, 1000);
