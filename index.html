@@ -110,11 +110,249 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
 .flip-calc-value { font-size: 20px; font-weight: bold; font-family: Consolas, monospace; }
 .flip-calc-actions { display: flex; gap: 10px; }
 .flip-calc-actions button { flex: 1; }
+
+
+/* ── V18 GAME DASHBOARD REDESIGN ── */
+:root{
+    --panel: rgba(8, 6, 28, 0.78);
+    --panel2: rgba(32, 10, 62, 0.62);
+    --line: rgba(255,128,255,0.24);
+    --blue-glow: #35a7ff;
+    --gold: #ffd54a;
+}
+body{
+    background:
+        radial-gradient(circle at 72% 18%, rgba(255,0,180,.28), transparent 26%),
+        radial-gradient(circle at 18% 80%, rgba(0,145,255,.22), transparent 30%),
+        linear-gradient(135deg,#050014 0%,#09051f 45%,#170026 100%);
+}
+.bg-wrapper{
+    background:
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        radial-gradient(circle at 80% 18%, rgba(255,0,190,.18), transparent 30%),
+        radial-gradient(circle at 25% 88%, rgba(0,140,255,.15), transparent 32%),
+        #030013;
+    background-size: 42px 42px, 42px 42px, auto, auto, auto;
+}
+.bg-wrapper:before{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(120deg, transparent 0 35%, rgba(255,0,255,.07) 48%, transparent 60%);
+    animation: dashScan 8s linear infinite;
+}
+.bg-wrapper:after{
+    content:"🎣";
+    position:absolute; right:5%; bottom:3%;
+    font-size:32vh; opacity:.035; transform:rotate(-12deg);
+    filter: drop-shadow(0 0 40px #ff00ff);
+}
+@keyframes dashScan{0%{transform:translateX(-70%)}100%{transform:translateX(70%)}}
+.sidebar{
+    width: 285px;
+    background: linear-gradient(180deg, rgba(18,4,40,.92), rgba(4,4,18,.94));
+    border-right:1px solid rgba(255,0,255,.28);
+    box-shadow: 18px 0 50px rgba(0,0,0,.35);
+}
+.logo{
+    font-size:26px;
+    letter-spacing:2px;
+    text-shadow:0 0 24px var(--accent-bright);
+}
+.logo:before{content:'♛ '; -webkit-text-fill-color:initial; color:#fff; text-shadow:0 0 18px #fff;}
+.stat-item,.card,.export-section,.chart-view-wrap,.flip-calc-card{
+    background: linear-gradient(145deg, rgba(19, 17, 55,.74), rgba(42, 7, 66,.46));
+    border:1px solid rgba(255,128,255,.18);
+    box-shadow: inset 0 0 22px rgba(255,255,255,.025), 0 16px 40px rgba(0,0,0,.22);
+}
+.stat-item:hover,.card:hover{border-color:rgba(255,0,255,.48); transform:translateY(-2px);}
+.tabs-nav{
+    padding:14px 18px;
+    background:rgba(4,2,20,.68);
+    border-bottom:1px solid rgba(255,128,255,.14);
+}
+.tab-btn{
+    border-radius:12px;
+    padding:10px 14px;
+    background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+}
+.tab-btn.active{
+    color:#fff;
+    background:linear-gradient(90deg, rgba(255,0,255,.9), rgba(90,80,255,.9));
+    box-shadow:0 0 20px rgba(255,0,255,.55);
+}
+.nav-input, select.nav-input{
+    background:rgba(2,4,18,.7);
+    border:1px solid rgba(170,130,255,.24);
+    box-shadow: inset 0 0 18px rgba(0,0,0,.24);
+}
+.nav-btn{
+    border-radius:10px;
+    background:linear-gradient(135deg, rgba(106,0,160,.95), rgba(255,0,210,.62));
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 0 14px rgba(255,0,255,.22);
+}
+.content{padding:22px; padding-bottom:120px;}
+.game-dashboard{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start;}
+.hero-panel{position:relative;overflow:hidden;border-radius:22px;padding:22px;border:1px solid rgba(255,128,255,.28);background:linear-gradient(135deg,rgba(17,16,55,.86),rgba(37,7,61,.66));box-shadow:0 0 42px rgba(255,0,255,.16), inset 0 0 40px rgba(255,255,255,.03);}
+.hero-panel:before{content:'🐉';position:absolute;left:18px;top:20px;font-size:120px;line-height:1;opacity:.18;filter:drop-shadow(0 0 30px #ff00ff);}
+.hero-content{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#bfa8ff;font-weight:800;}
+.hero-title{font-size:36px;line-height:1;font-weight:1000;margin:8px 0;background:linear-gradient(90deg,#fff,#ff91ff,#54c7ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 25px rgba(255,0,255,.28);}
+.set-progress{height:10px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:14px;}
+.set-progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#ff00ff,#56b8ff);box-shadow:0 0 18px #ff00ff;}
+.hero-stats{display:grid;gap:10px;}
+.hero-stat{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:13px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.07);}
+.hero-stat b{font-size:18px;font-family:Consolas,monospace;}
+.gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:14px;}
+.gear-card{position:relative;min-height:210px;border-radius:18px;padding:15px;background:linear-gradient(155deg,rgba(12,12,44,.82),rgba(32,7,53,.68));border:1px solid rgba(152,160,255,.24);box-shadow:inset 0 0 28px rgba(255,255,255,.025),0 18px 38px rgba(0,0,0,.25);overflow:hidden;}
+.gear-card:before{content:attr(data-icon);position:absolute;right:10px;top:22px;font-size:64px;opacity:.18;filter:drop-shadow(0 0 20px #ff00ff);}
+.gear-type{font-size:10px;color:#aeb2ff;text-transform:uppercase;letter-spacing:1.5px;font-weight:900;}
+.gear-name{font-weight:1000;font-size:17px;margin:7px 0 35px;min-height:42px;}
+.dur-pill{font-size:28px;font-weight:1000;font-family:Consolas,monospace;text-align:right;}
+.gear-price{margin-top:8px;color:#7dff74;font-weight:900;font-family:Consolas,monospace;}
+.gear-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px;}
+.gear-actions button{height:34px;font-size:10px;}
+.dash-note{margin:14px 0;padding:11px 14px;border-radius:13px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);color:#bdb6d8;font-size:12px;}
+.set-table{margin-top:14px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,128,255,.2);background:rgba(4,5,24,.64);}
+.set-table-head,.set-row{display:grid;grid-template-columns:1.2fr .7fr .9fr .9fr .9fr .7fr 160px;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;}
+.set-table-head{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:#9d96bd;background:rgba(255,255,255,.04);font-weight:900;}
+.set-row:last-child{border-bottom:0}.set-row:hover{background:rgba(255,0,255,.045)}
+.side-stack{display:grid;gap:14px;}
+.fishing-card{border-radius:22px;overflow:hidden;border:1px solid rgba(255,128,255,.28);background:linear-gradient(145deg,rgba(47,5,71,.7),rgba(6,12,38,.9));box-shadow:0 0 35px rgba(255,0,255,.15);}
+.fish-art{height:188px;background:radial-gradient(circle at 78% 20%, #ffcfec 0 5%, transparent 6%),linear-gradient(160deg, rgba(255,0,170,.45), transparent 42%),linear-gradient(180deg,#221047,#08071e 65%,#10002a);position:relative;}
+.fish-art:before{content:'🎣';position:absolute;left:32px;bottom:12px;font-size:86px;filter:drop-shadow(0 0 20px #ff00ff);}
+.fish-art:after{content:'🌊 🌊 🌊';position:absolute;right:18px;bottom:16px;opacity:.55;letter-spacing:8px;}
+.side-card{border-radius:18px;padding:16px;background:linear-gradient(145deg,rgba(19,17,55,.78),rgba(42,7,66,.52));border:1px solid rgba(255,128,255,.22);box-shadow:0 16px 34px rgba(0,0,0,.22);}
+.side-title{font-weight:1000;text-transform:uppercase;letter-spacing:1.5px;font-size:13px;margin-bottom:12px;color:#efe5ff;}
+.quick-stat{display:flex;justify-content:space-between;padding:7px 0;color:#c6c1da;font-size:13px;}
+.event-line{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.055);font-size:12px;color:#cfc9df;}.event-line:last-child{border-bottom:0}
+.glow-green{color:#73ff67!important;text-shadow:0 0 12px rgba(115,255,103,.45)}.glow-red{color:#ff3e67!important;text-shadow:0 0 12px rgba(255,62,103,.45)}.glow-pink{color:#f965ff!important;text-shadow:0 0 12px rgba(249,101,255,.45)}.glow-blue{color:#4fb8ff!important;text-shadow:0 0 12px rgba(79,184,255,.45)}
+@media(max-width:1250px){.game-dashboard{grid-template-columns:1fr}.gear-grid{grid-template-columns:repeat(2,1fr)}.side-stack{grid-template-columns:1fr 1fr}.set-table-head,.set-row{grid-template-columns:1fr 1fr;}.set-table-head span:nth-child(n+3),.set-row span:nth-child(n+3){display:none}}
+@media(max-width:800px){body{overflow:auto}.sidebar{display:none}.main{min-height:100vh}.gear-grid,.hero-content,.side-stack{grid-template-columns:1fr}.bottom-control{position:fixed}.content{padding-bottom:150px}.game-dashboard{display:block}.side-stack{margin-top:14px}}
+
+
+/* ===== V18.1 FIX: dashboard layout / create set form ===== */
+#view-sets {
+    overflow-x: hidden;
+}
+
+.pm-dashboard,
+.sets-dashboard,
+.game-dashboard,
+.dashboard-grid,
+.dash-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 360px !important;
+    gap: 18px !important;
+    align-items: start !important;
+}
+
+.pm-dashboard > *,
+.sets-dashboard > *,
+.game-dashboard > *,
+.dashboard-grid > *,
+.dash-grid > * {
+    min-width: 0 !important;
+}
+
+.set-create,
+.create-set,
+.set-create-panel,
+#create-set-panel,
+#sets-create,
+#sets-form {
+    display: grid !important;
+    grid-template-columns: minmax(180px, 1.4fr) repeat(4, minmax(120px, 1fr)) minmax(140px, .9fr) !important;
+    gap: 10px !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+}
+
+.set-create .nav-input,
+.create-set .nav-input,
+.set-create-panel .nav-input,
+#create-set-panel .nav-input,
+#sets-create .nav-input,
+#sets-form .nav-input,
+.set-create select,
+.create-set select,
+.set-create-panel select,
+#create-set-panel select,
+#sets-create select,
+#sets-form select {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
+#sets-list {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+}
+
+#sets-list table,
+.sets-table {
+    width: 100% !important;
+    min-width: 720px !important;
+}
+
+@media (max-width: 1350px) {
+    .pm-dashboard,
+    .sets-dashboard,
+    .game-dashboard,
+    .dashboard-grid,
+    .dash-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .set-create,
+    .create-set,
+    .set-create-panel,
+    #create-set-panel,
+    #sets-create,
+    #sets-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 760px) {
+    .set-create,
+    .create-set,
+    .set-create-panel,
+    #create-set-panel,
+    #sets-create,
+    #sets-form {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 </style>
 </head>
 <body onclick="initAudio()">
 
 <div class="bg-wrapper">
+<img
+src="https://raw.githubusercontent.com/hlwhrx/assets/main/anime-girl.png"
+onerror="this.style.display='none'"
+style="
+position:absolute;
+right:0;
+bottom:0;
+height:92vh;
+opacity:0.22;
+pointer-events:none;
+filter:
+drop-shadow(0 0 50px #ff00ff)
+drop-shadow(0 0 100px #aa00ff)
+blur(0.5px);
+mix-blend-mode:screen;
+z-index:0;
+user-select:none;
+"
+>
     <div class="bg-orb" style="top:-10%;left:-10%;"></div>
     <div class="bg-orb" style="bottom:-10%;right:-10%;animation-delay:-7s;"></div>
 </div>
@@ -175,6 +413,7 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
         <button id="b-export"  class="tab-btn" onclick="tab('export')">📤 Экспорт</button>
         <button id="b-calc"    class="tab-btn calc-tab" onclick="tab('calc')">💱 Калькулятор</button>
         <button id="b-archive" class="tab-btn" onclick="tab('archive')">⚰️ Кладбище</button>
+<button id="b-sets" class="tab-btn" onclick="tab('sets')">🐉 Game Dashboard</button>
     </div>
 
     <div class="content">
@@ -317,6 +556,58 @@ body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidde
             </div>
         </div>
 
+        
+        <!-- СЕТЫ / GAME DASHBOARD -->
+        <div id="view-sets" class="view">
+            <div class="game-dashboard">
+                <div>
+                    <div id="sets-hero"></div>
+                    <div id="sets-gear"></div>
+
+                    <div class="dash-note">💡 Доход с нижней панели записывается в активный сет. Если снасть сломалась — жми «Заменить», вводи цену и прочность новой.</div>
+
+                    <div class="set-table">
+                        <div class="set-table-head">
+                            <span>Сет</span><span>Статус</span><span>Заработано</span><span>Расходы</span><span>Чистыми</span><span>Окуп</span><span>Действия</span>
+                        </div>
+                        <div id="sets-table"></div>
+                    </div>
+
+                    <div class="side-card" style="margin-top:14px;">
+                        <div class="side-title">＋ Создать новый сет</div>
+                        <div style="display:grid;grid-template-columns:1.2fr repeat(4,1fr) auto;gap:10px;">
+                            <input id="set-name" class="nav-input" placeholder="Название сета">
+                            <select id="set-item-1" class="nav-input" title="Предмет 1"></select>
+                            <select id="set-item-2" class="nav-input" title="Предмет 2"></select>
+                            <select id="set-item-3" class="nav-input" title="Предмет 3"></select>
+                            <select id="set-item-4" class="nav-input" title="Предмет 4"></select>
+                            <button class="nav-btn" onclick="createSet()" style="background:var(--accent-bright);color:#000;">СОЗДАТЬ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="side-stack">
+                    <div class="fishing-card">
+                        <div style="padding:15px 17px;font-weight:1000;text-transform:uppercase;letter-spacing:1px;">Рыбалка</div>
+                        <div class="fish-art"></div>
+                        <div style="padding:16px;">
+                            <div class="kicker">Доход с рыбалки</div>
+                            <div id="dash-fish-income" style="font-size:30px;font-weight:1000;margin:5px 0 12px;color:#7dff74;text-shadow:0 0 14px rgba(125,255,116,.45);">$0</div>
+                            <button class="nav-btn" onclick="document.getElementById('in-fish').focus()" style="height:48px;width:100%;background:linear-gradient(90deg,#ff00d4,#8d24ff);font-size:13px;">🎣 ЗАПИСАТЬ ДОХОД</button>
+                        </div>
+                    </div>
+                    <div class="side-card">
+                        <div class="side-title">Быстрая статистика</div>
+                        <div id="sets-quick-stats"></div>
+                    </div>
+                    <div class="side-card">
+                        <div class="side-title">Недавние события</div>
+                        <div id="sets-recent-events"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- КЛАДБИЩЕ -->
         <div id="view-archive" class="view">
             <div id="archive-list"></div>
@@ -351,8 +642,24 @@ if (!db) {
     const old = localStorage.getItem('PRINCE_ULTRA_V13');
     if (old) { try { const o=JSON.parse(old); db={items:o.items||[],profitFish:o.profit||0,profitFlip:0,loss:o.loss||0,lossFlip:0,notes:o.notes||"",archive:o.archive||[],timers:o.timers||[],history:o.history||[{t:Date.now(),val:0}],fishEvents:o.profitEvents||[],flipEvents:[]}; } catch(e){} }
 }
-if (!db) db={items:[],profitFish:0,profitFlip:0,loss:0,lossFlip:0,notes:"",archive:[],timers:[],history:[{t:Date.now(),val:0}],fishEvents:[],flipEvents:[]};
-['items','archive','timers','fishEvents','flipEvents'].forEach(k=>{ if(!db[k]) db[k]=[]; });
+if (!db) db={
+    items:[],
+    sets:[],
+    activeSet:null,
+    profitFish:0,
+    profitFlip:0,
+    loss:0,
+    lossFlip:0,
+    notes:"",
+    archive:[],
+    timers:[],
+    history:[{t:Date.now(),val:0}],
+    fishEvents:[],
+    flipEvents:[]
+};
+['items','archive','timers','fishEvents','flipEvents','sets'].forEach(k=>{ if(!db[k]) db[k]=[]; });
+if(db.activeSet===undefined) db.activeSet=null;
+db.sets.forEach(s=>{ if(s.totalCost===undefined) s.totalCost=s.items?s.items.reduce((a,b)=>a+(parseFloat(b.price)||0),0):0; if(s.earned===undefined) s.earned=0; });
 if(!db.history||!db.history.length) db.history=[{t:Date.now(),val:0}];
 if(typeof db.notes!=='string') db.notes="";
 ['profitFish','profitFlip','loss','lossFlip'].forEach(k=>{ if(!db[k]) db[k]=0; });
@@ -389,7 +696,7 @@ function filterEvents(arr,ms) { const n=Date.now(); return arr.filter(e=>n-e.t<m
 
 function clearStats() {
     if(confirm("Внимание! Это удалит ВСЕ предметы, историю и прибыль. Продолжить?")) {
-        db={items:[],profitFish:0,profitFlip:0,loss:0,lossFlip:0,notes:db.notes,archive:[],timers:[],history:[{t:Date.now(),val:0}],fishEvents:[],flipEvents:[]};
+        db={items:[],sets:[],activeSet:null,profitFish:0,profitFlip:0,loss:0,lossFlip:0,notes:db.notes,archive:[],timers:[],history:[{t:Date.now(),val:0}],fishEvents:[],flipEvents:[]};
         if(mainChart){mainChart.destroy();mainChart=null;}
         sync();
     }
@@ -420,10 +727,10 @@ function render() {
     document.getElementById('grid').innerHTML = db.items.map((it,i)=>`
         <div class="card">
             <div class="card-header"><b>${safeHtml(it.name)}</b><span style="color:var(--accent-light)">$${Math.floor(it.price).toLocaleString()}</span></div>
-            <div class="dur-val" style="color:${it.dur<30?'var(--red)':it.dur<60?'#ffaa00':'var(--accent-light)'}">${it.dur}%</div>
+            <div class="dur-val" style="color:${it.dur<20?'#ff2255':it.dur<50?'#ffaa00':'#00ffcc'};text-shadow:0 0 10px ${it.dur<20?'#ff2255':it.dur<50?'#ffaa00':'#00ffcc'},0 0 28px ${it.dur<20?'#ff2255':it.dur<50?'#ffaa00':'#00ffcc'}">${it.dur}%</div>
             <div class="card-footer">
                 <button class="f-btn" onclick="dmg(${i})" style="color:var(--accent-bright);border-right:1px solid rgba(255,255,255,0.1)">-1% ИЗНОС</button>
-                <button class="f-btn" onclick="toArchive(${i})">В АРХИВ</button>
+                <button class="f-btn" onclick="replaceItem(${i})">🔧 ЗАМЕНА</button>
             </div>
         </div>`).join('');
 
@@ -432,15 +739,38 @@ function render() {
         : db.archive.map(it=>`<div class="stat-item" style="display:flex;justify-content:space-between"><span>${safeHtml(it.name)}</span><span style="color:var(--red)">-$${Math.floor(it.lossAt).toLocaleString()}</span></div>`).join('');
 
     renderHistory();
+    renderSets();
+    refreshSetSelectors();
     updateSideChart();
     if(mainChart) buildMainChart();
 }
 
 /* ── ITEMS ── */
+
 function addItem() {
-    const n=document.getElementById('in-n').value, p=parseInt(document.getElementById('in-p').value)||0;
-    if(n){db.items.push({name:n,price:p,dur:100});document.getElementById('in-n').value='';document.getElementById('in-p').value='';sync();}
+
+    const n=document.getElementById('in-n').value;
+    const p=parseInt(document.getElementById('in-p').value)||0;
+
+    if(!n) return;
+
+    db.items.push({
+        name:n,
+        price:p,
+        dur:100,
+        earned:0,
+        repairs:0,
+        created:Date.now()
+    });
+
+    db.loss += p;
+
+    document.getElementById('in-n').value='';
+    document.getElementById('in-p').value='';
+
+    sync();
 }
+
 function dmg(i) {
     if(db.items[i].dur>0){db.loss+=db.items[i].price*0.01;db.items[i].dur-=1;db.history.push({t:Date.now(),val:netVal()});sync();}
 }
@@ -448,12 +778,70 @@ function toArchive(i) {
     if(confirm("В архив?")){let it=db.items[i];it.lossAt=Math.floor(it.price*(100-it.dur)/100);db.archive.push(it);db.items.splice(i,1);sync();}
 }
 
+
+function replaceItem(i) {
+    const item=db.items[i];
+    if(!item) return;
+
+    const newName=prompt('Название новой снасти', item.name || 'Снасть');
+    if(!newName) return;
+
+    const priceText=prompt('Цена новой снасти', item.price || 0);
+    if(priceText===null) return;
+    const newPrice=parseInt(priceText)||0;
+
+    const durText=prompt('Прочность новой снасти (1-100)', 100);
+    if(durText===null) return;
+    let newDur=parseInt(durText);
+    if(isNaN(newDur)) newDur=100;
+    if(newDur<1 || newDur>100) {
+        alert('Прочность должна быть от 1 до 100');
+        return;
+    }
+
+    const oldName=item.name;
+    const oldDur=item.dur;
+
+    db.loss += newPrice;
+
+    if(!db.sets) db.sets=[];
+    db.sets.forEach(set=>{
+        if(!set.items) set.items=[];
+        const used=set.items.some(si=>si===item || (si.created && item.created && si.created===item.created));
+        if(used) {
+            set.totalCost=(set.totalCost||0)+newPrice;
+            if(!set.replacements) set.replacements=[];
+            set.replacements.push({
+                t:Date.now(),
+                oldName:oldName,
+                oldDur:oldDur,
+                newName:newName,
+                price:newPrice,
+                dur:newDur
+            });
+        }
+    });
+
+    item.name=newName;
+    item.price=newPrice;
+    item.dur=newDur;
+    item.replacedAt=Date.now();
+
+    db.history.push({t:Date.now(),val:netVal()});
+    sync();
+
+    alert('✅ Снасть заменена\n\nНазвание: '+newName+'\nЦена: '+money(newPrice)+'\nПрочность: '+newDur+'%');
+}
+
 /* ── FISH ── */
 function addFishProfit() {
     const v=parseInt(document.getElementById('in-fish').value)||0;
     if(v>0){
+        let active=null;
+        if(db.activeSet && db.sets) active=db.sets.find(s=>s.id===db.activeSet);
+        if(active) active.earned=(active.earned||0)+v;
         db.profitFish+=v;
-        db.fishEvents.push({t:Date.now(),v});
+        db.fishEvents.push({t:Date.now(),v,set:active?active.name:null});
         db.history.push({t:Date.now(),val:netVal()});
         playBell();
         document.getElementById('in-fish').value='';
@@ -488,7 +876,9 @@ function tab(name) {
     document.getElementById('view-'+name).classList.add('active');
     document.getElementById('b-'+name).classList.add('active');
     if(name==='chart'){buildMainChart();}
-    if(name==='history'){renderHistory();}
+    if(name==='history'){renderHistory();
+    renderSets();
+    refreshSetSelectors();}
 }
 
 /* ── SIDE CHART ── */
@@ -564,6 +954,8 @@ function histFilter(f) {
         b.style.color = k===f ? '#000' : '#fff';
     });
     renderHistory();
+    renderSets();
+    refreshSetSelectors();
 }
 
 function renderHistory() {
@@ -738,10 +1130,270 @@ function saveFlipProfit() {
 }
 function resetFlipCalc() {
     ['flip-buy','flip-sell'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('flip-fee').value='0'; document.getElementById('flip-extra').value='0'; calcFlip();
+    document.getElementById('flip-extra').value='0'; calcFlip();
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){const n=document.getElementById('note-overlay');if(n&&n.style.display==='flex')n.style.display='none';}});
+
+
+function refreshSetSelectors() {
+
+    const selects=[
+        document.getElementById('set-item-1'),
+        document.getElementById('set-item-2'),
+        document.getElementById('set-item-3'),
+        document.getElementById('set-item-4')
+    ];
+
+    selects.forEach(sel=>{
+
+        if(!sel) return;
+
+        sel.innerHTML='<option value="">Предмет</option>' +
+            db.items.map((it,i)=>
+                `<option value="${i}">${it.name}</option>`
+            ).join('');
+    });
+}
+
+function createSet() {
+
+    const name=document.getElementById('set-name').value;
+
+    if(!name) {
+        alert('Введите название сета');
+        return;
+    }
+
+    const ids=[
+        document.getElementById('set-item-1').value,
+        document.getElementById('set-item-2').value,
+        document.getElementById('set-item-3').value,
+        document.getElementById('set-item-4').value
+    ].filter(v=>v!=="");
+
+    if(ids.length!==4) {
+        alert('Нужно выбрать 4 предмета');
+        return;
+    }
+
+    const items=ids.map(id=>db.items[id]);
+
+    const totalCost=items.reduce((a,b)=>a+b.price,0);
+
+    db.sets.push({
+        id:Date.now(),
+        name,
+        items,
+        earned:0,
+        totalCost,
+        replacements:[],
+        created:Date.now(),
+        active:false
+    });
+
+    document.getElementById('set-name').value='';
+
+    sync();
+}
+
+function setActiveSet(id) {
+
+    db.activeSet=id;
+
+    db.sets.forEach(s=>{
+        s.active=s.id===id;
+    });
+
+    sync();
+}
+
+function addSetProfit(id) {
+
+    const amount=parseInt(prompt('Сколько заработал сет?'))||0;
+
+    if(amount<=0) return;
+
+    const set=db.sets.find(s=>s.id===id);
+
+    if(!set) return;
+
+    set.earned += amount;
+
+    db.profitFish += amount;
+
+    db.fishEvents.push({
+        t:Date.now(),
+        v:amount,
+        set:set.name
+    });
+
+    db.history.push({
+        t:Date.now(),
+        val:netVal()
+    });
+
+    playBell();
+
+    sync();
+}
+
+function destroySet(id) {
+
+    const set=db.sets.find(s=>s.id===id);
+
+    if(!set) return;
+
+    const clean=set.earned-set.totalCost;
+
+    alert(
+        '🎣 '+set.name+'\n\n'+
+        'Заработано: '+money(set.earned)+'\n'+
+        'Затраты: '+money(set.totalCost)+'\n'+
+        'Чистая прибыль: '+
+        (clean>=0?'+':'-')+
+        money(clean)
+    );
+
+    db.archive.push({
+        name:set.name,
+        lossAt:set.totalCost,
+        earned:set.earned,
+        clean:clean,
+        deadAt:Date.now()
+    });
+
+    db.sets=db.sets.filter(s=>s.id!==id);
+
+    if(db.activeSet===id)
+        db.activeSet=null;
+
+    sync();
+}
+
+function itemDbIndex(item) {
+    if(!item || !db.items) return -1;
+    let idx=db.items.indexOf(item);
+    if(idx>=0) return idx;
+    if(item.created) {
+        idx=db.items.findIndex(x=>x && x.created===item.created);
+        if(idx>=0) return idx;
+    }
+    return db.items.findIndex(x=>x && x.name===item.name && x.price===item.price && x.dur===item.dur);
+}
+
+function setDurAvg(set) {
+    if(!set || !set.items || !set.items.length) return 0;
+    return Math.floor(set.items.reduce((a,b)=>a+(parseInt(b.dur)||0),0)/set.items.length);
+}
+
+function renderSets() {
+    const hero=document.getElementById('sets-hero');
+    const gear=document.getElementById('sets-gear');
+    const table=document.getElementById('sets-table');
+    const quick=document.getElementById('sets-quick-stats');
+    const recent=document.getElementById('sets-recent-events');
+    const fishIncome=document.getElementById('dash-fish-income');
+    if(!hero || !gear || !table) return;
+
+    if(!db.sets) db.sets=[];
+    const active=db.sets.find(s=>s.id===db.activeSet) || db.sets.find(s=>s.active) || db.sets[0] || null;
+
+    if(!active) {
+        hero.innerHTML=`<div class="hero-panel"><div class="hero-content"><div><div class="kicker">Активный сет</div><div class="hero-title">СЕТ НЕ ВЫБРАН</div><div style="color:#bdb6d8;line-height:1.6;">Создай сет из 4 предметов ниже, затем нажми ACTIVE. После этого доход с рыбалки будет идти именно в этот сет.</div></div><div class="hero-stats"><div class="hero-stat"><span>Статус</span><b class="glow-red">OFF</b></div></div></div></div>`;
+        gear.innerHTML='';
+        table.innerHTML=`<div style="padding:28px;text-align:center;color:#777;">Сетов пока нет</div>`;
+    } else {
+        const earned=active.earned||0;
+        const cost=active.totalCost||0;
+        const clean=earned-cost;
+        const roi=cost>0 ? (earned/cost) : 0;
+        const dur=setDurAvg(active);
+        const progress=Math.max(0,Math.min(100,dur));
+        hero.innerHTML=`
+            <div class="hero-panel">
+                <div class="hero-content">
+                    <div>
+                        <div class="kicker">Активный сет</div>
+                        <div class="hero-title">${safeHtml(active.name)}</div>
+                        <div style="display:flex;justify-content:space-between;color:#d8cfff;font-size:12px;font-weight:800;">
+                            <span>Средняя прочность сета</span><span>${dur}%</span>
+                        </div>
+                        <div class="set-progress"><span style="width:${progress}%"></span></div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat"><span>🎣 Заработано сетом</span><b class="glow-green">${money(earned)}</b></div>
+                        <div class="hero-stat"><span>💸 Расходы сета</span><b class="glow-red">${money(cost)}</b></div>
+                        <div class="hero-stat"><span>🌸 Чистая прибыль</span><b class="${clean>=0?'glow-pink':'glow-red'}">${clean>=0?'+':'-'}${money(clean)}</b></div>
+                        <div class="hero-stat"><span>📈 Окуп сета</span><b class="glow-blue">${roi.toFixed(2)}x</b></div>
+                    </div>
+                </div>
+            </div>`;
+
+        const icons=['🎣','🧵','🪝','🐟'];
+        const types=['Удочка','Катушка','Леска','Приманка'];
+        gear.innerHTML=`<div class="gear-grid">${(active.items||[]).slice(0,4).map((it,idx)=>{
+            const dbi=itemDbIndex(it);
+            const d=parseInt(it.dur)||0;
+            const cls=d<20?'glow-red':d<50?'glow-red':d<75?'glow-pink':'glow-green';
+            return `<div class="gear-card" data-icon="${icons[idx]||'🎒'}">
+                <div class="gear-type">${types[idx]||'Предмет'}</div>
+                <div class="gear-name">${safeHtml(it.name||'Без названия')}</div>
+                <div class="dur-pill ${cls}">${d}%</div>
+                <div style="font-size:10px;color:#8b86a8;text-align:right;text-transform:uppercase;">прочность</div>
+                <div class="gear-price">${money(it.price||0)}</div>
+                <div style="font-size:10px;color:#8b86a8;text-transform:uppercase;">цена покупки</div>
+                <div class="gear-actions">
+                    <button class="nav-btn" onclick="replaceItem(${dbi})" ${dbi<0?'disabled':''}>ЗАМЕНИТЬ</button>
+                    <button class="nav-btn" onclick="dmg(${dbi})" ${dbi<0?'disabled':''} style="background:#161735;">-1%</button>
+                </div>
+            </div>`;
+        }).join('')}</div>`;
+    }
+
+    table.innerHTML=db.sets.length?db.sets.map(set=>{
+        const earned=set.earned||0, cost=set.totalCost||0, clean=earned-cost;
+        const roi=cost>0?(earned/cost):0;
+        const isActive=(active && set.id===active.id);
+        return `<div class="set-row">
+            <span style="font-weight:900;color:${isActive?'#fff':'#cfc9e8'}">${isActive?'🐉 ':''}${safeHtml(set.name)}</span>
+            <span class="${isActive?'glow-green':''}">${isActive?'★ АКТИВЕН':'НЕ АКТИВЕН'}</span>
+            <span class="glow-green">${money(earned)}</span>
+            <span class="glow-red">${money(cost)}</span>
+            <span class="${clean>=0?'glow-pink':'glow-red'}">${clean>=0?'+':'-'}${money(clean)}</span>
+            <span class="glow-blue">${roi.toFixed(2)}x</span>
+            <span style="display:flex;gap:6px;">
+                <button class="nav-btn" onclick="setActiveSet(${set.id})" style="height:30px;padding:0 8px;">ACTIVE</button>
+                <button class="nav-btn" onclick="addSetProfit(${set.id})" style="height:30px;padding:0 8px;background:var(--accent-bright);color:#000;">+$</button>
+                <button class="nav-btn" onclick="destroySet(${set.id})" style="height:30px;padding:0 8px;background:#551122;">🗑</button>
+            </span>
+        </div>`;
+    }).join(''):`<div style="padding:28px;text-align:center;color:#777;">Сетов пока нет</div>`;
+
+    if(fishIncome) fishIncome.innerText=money(filterEvents(db.fishEvents||[],86400000));
+    if(quick) {
+        const repl=db.sets.reduce((a,s)=>a+((s.replacements||[]).length),0);
+        const best=(db.fishEvents||[]).reduce((m,e)=>Math.max(m,e.v||0),0);
+        quick.innerHTML=`
+            <div class="quick-stat"><span>Сетов создано</span><b>${db.sets.length}</b></div>
+            <div class="quick-stat"><span>Предметов куплено</span><b>${(db.items||[]).length}</b></div>
+            <div class="quick-stat"><span>Замен предметов</span><b>${repl}</b></div>
+            <div class="quick-stat"><span>Всего забросов/записей</span><b>${(db.fishEvents||[]).length}</b></div>
+            <div class="quick-stat"><span>Лучший доход</span><b>${money(best)}</b></div>`;
+    }
+    if(recent) {
+        const events=[
+            ...(db.fishEvents||[]).map(e=>({t:e.t,txt:(e.set?'🎣 '+e.set:'🎣 Рыбалка'),v:e.v||0})),
+            ...db.sets.flatMap(s=>(s.replacements||[]).map(r=>({t:r.t,txt:'🔧 '+s.name+' / '+r.newName,v:-Math.abs(r.price||0)})))
+        ].sort((a,b)=>b.t-a.t).slice(0,7);
+        recent.innerHTML=events.length?events.map(e=>{
+            const pos=e.v>=0;
+            const time=new Date(e.t).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+            return `<div class="event-line"><span>${safeHtml(e.txt)}</span><b class="${pos?'glow-green':'glow-red'}">${pos?'+':'-'}${money(e.v)} <span style="color:#777;font-weight:400">${time}</span></b></div>`;
+        }).join(''):`<div style="color:#777;font-size:13px;">Событий пока нет</div>`;
+    }
+}
+
 
 initTheme();
 render();
